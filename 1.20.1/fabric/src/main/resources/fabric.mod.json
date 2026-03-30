@@ -1,0 +1,36 @@
+{
+    "schemaVersion": 1,
+    "id": "muchmoredungeons",
+    "version": "${version}",
+    "name": "${mod_name}",
+    "description": "${description}",
+    "authors": [
+        "${mod_author}"
+    ],
+    "contact": {
+        "homepage": "https://nightbeam.cloud",
+        "sources": "https://github.com/YourGitHub/MuchMoreDungeons"
+    },
+    "license": "${license}",
+    "icon": "assets/muchmoredungeons/muchmoredungeons.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "com.nightbeam.muchmoredungeons.MuchMoreDungeons"
+        ]
+    },
+    "mixins": [
+        "muchmoredungeons.mixins.json",
+        "muchmoredungeons.fabric.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.14",
+        "fabric": "*",
+        "minecraft": "${minecraft_version}",
+        "java": ">=17"
+    },
+    "suggests": {
+        "another-mod": "*"
+    }
+}
+  
