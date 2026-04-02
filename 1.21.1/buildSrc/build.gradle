@@ -1,3 +1,19 @@
 plugins {
     id 'groovy-gradle-plugin'
 }
+
+def targetJavaVersion = providers.gradleProperty('java_version')
+        .map(Integer.&parseInt)
+        .orElse(21)
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(targetJavaVersion.get())
+    }
+    sourceCompatibility = JavaVersion.toVersion(targetJavaVersion.get())
+    targetCompatibility = JavaVersion.toVersion(targetJavaVersion.get())
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = targetJavaVersion.get()
+}

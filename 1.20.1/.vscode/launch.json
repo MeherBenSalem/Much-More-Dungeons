@@ -12,15 +12,15 @@
       "projectName": "forge",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\Serene\\Documents\\GitHub\\Much More Dungeons\\1.20.1\\forge\\build\\moddev\\clientRunProgramArgs.txt"
+        "@D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.20.1\\forge\\build\\moddev\\clientRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\Serene\\Documents\\GitHub\\Much More Dungeons\\1.20.1\\forge\\build\\moddev\\clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003dmuchmoredungeons%%C:\\Users\\Serene\\Documents\\GitHub\\Much More Dungeons\\1.20.1\\forge\\bin\\main"
+        "@D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.20.1\\forge\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmuchmoredungeons%%D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.20.1\\forge\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\forge\\run",
       "env": {
-        "MOD_CLASSES": "muchmoredungeons%%C:\\Users\\Serene\\Documents\\GitHub\\Much More Dungeons\\1.20.1\\forge\\bin\\main"
+        "MOD_CLASSES": "muchmoredungeons%%D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.20.1\\forge\\bin\\main"
       },
       "console": "internalConsole",
       "shortenCommandLine": "none"
@@ -36,15 +36,15 @@
       "projectName": "forge",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\Serene\\Documents\\GitHub\\Much More Dungeons\\1.20.1\\forge\\build\\moddev\\dataRunProgramArgs.txt"
+        "@D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.20.1\\forge\\build\\moddev\\dataRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\Serene\\Documents\\GitHub\\Much More Dungeons\\1.20.1\\forge\\build\\moddev\\dataRunVmArgs.txt",
-        "-Dfml.modFolders\u003dmuchmoredungeons%%C:\\Users\\Serene\\Documents\\GitHub\\Much More Dungeons\\1.20.1\\forge\\bin\\main"
+        "@D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.20.1\\forge\\build\\moddev\\dataRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmuchmoredungeons%%D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.20.1\\forge\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\forge\\run",
       "env": {
-        "MOD_CLASSES": "muchmoredungeons%%C:\\Users\\Serene\\Documents\\GitHub\\Much More Dungeons\\1.20.1\\forge\\bin\\main"
+        "MOD_CLASSES": "muchmoredungeons%%D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.20.1\\forge\\bin\\main"
       },
       "console": "internalConsole",
       "shortenCommandLine": "none"
@@ -60,15 +60,15 @@
       "projectName": "forge",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\Serene\\Documents\\GitHub\\Much More Dungeons\\1.20.1\\forge\\build\\moddev\\serverRunProgramArgs.txt"
+        "@D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.20.1\\forge\\build\\moddev\\serverRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\Serene\\Documents\\GitHub\\Much More Dungeons\\1.20.1\\forge\\build\\moddev\\serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003dmuchmoredungeons%%C:\\Users\\Serene\\Documents\\GitHub\\Much More Dungeons\\1.20.1\\forge\\bin\\main"
+        "@D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.20.1\\forge\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmuchmoredungeons%%D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.20.1\\forge\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\forge\\run",
       "env": {
-        "MOD_CLASSES": "muchmoredungeons%%C:\\Users\\Serene\\Documents\\GitHub\\Much More Dungeons\\1.20.1\\forge\\bin\\main"
+        "MOD_CLASSES": "muchmoredungeons%%D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.20.1\\forge\\bin\\main"
       },
       "console": "internalConsole",
       "shortenCommandLine": "none"
