@@ -3,7 +3,16 @@
 
 $root  = $PSScriptRoot
 $dist  = Join-Path $root "dist"
-$versions = @("1.21.8", "1.21.11", "26.1.1")
+
+# Per-version loader configuration
+$versionLoaders = [ordered]@{
+    "1.20.1"  = @("fabric", "forge")
+    "1.21.1"  = @("fabric", "neoforge")
+    "1.21.5"  = @("fabric", "neoforge")
+    "1.21.8"  = @("fabric", "neoforge")
+    "1.21.11" = @("fabric", "neoforge")
+    "26.1.1"  = @("fabric", "neoforge")
+}
 
 # Recreate dist folder
 if (Test-Path $dist) { Remove-Item $dist -Recurse -Force }
@@ -13,14 +22,18 @@ Write-Host "Output folder: $dist`n"
 $success = @()
 $failed  = @()
 
-foreach ($ver in $versions) {
+foreach ($ver in $versionLoaders.Keys) {
+    $loaders = $versionLoaders[$ver]
     $dir = Join-Path $root $ver
     Write-Host "========================================" -ForegroundColor Cyan
-    Write-Host " Building $ver" -ForegroundColor Cyan
+    Write-Host " Building $ver ($($loaders -join ', '))" -ForegroundColor Cyan
     Write-Host "========================================" -ForegroundColor Cyan
 
+    # Build tasks for each loader
+    $tasks = $loaders | ForEach-Object { ":${_}:build" }
+
     Push-Location $dir
-    & .\gradlew.bat :fabric:build :neoforge:build --console=plain 2>&1
+    & .\gradlew.bat @tasks --console=plain 2>&1
     $exitCode = $LASTEXITCODE
     Pop-Location
 
@@ -30,9 +43,9 @@ foreach ($ver in $versions) {
         continue
     }
 
-    # Collect the remapped JARs (exclude -dev, -sources, -javadoc)
+    # Collect the remapped JARs (exclude -dev, -sources, -javadoc, -slim)
     $collected = 0
-    foreach ($loader in @("fabric", "neoforge")) {
+    foreach ($loader in $loaders) {
         $libDir = Join-Path $dir "$loader\build\libs"
         if (-not (Test-Path $libDir)) { continue }
         Get-ChildItem $libDir -Filter "*.jar" |

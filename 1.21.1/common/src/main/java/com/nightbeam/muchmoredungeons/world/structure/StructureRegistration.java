@@ -33,6 +33,20 @@ public class StructureRegistration {
                     TowerDungeonPiece::new
             );
 
+    public static final StructureType<Dungeon2Structure> DUNGEON2_TYPE =
+            Registry.register(
+                    BuiltInRegistries.STRUCTURE_TYPE,
+                    ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "dungeon_t2"),
+                    () -> Dungeon2Structure.CODEC
+            );
+
+    public static final StructurePieceType DUNGEON2_PIECE_TYPE =
+            Registry.register(
+                    BuiltInRegistries.STRUCTURE_PIECE,
+                    ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "dungeon_t2_piece"),
+                    Dungeon2Piece::new
+            );
+
     public static void init() {
         LOGGER.info("Registering structure types for {}", Constants.MOD_ID);
         // Static fields above are initialized when this class is loaded,

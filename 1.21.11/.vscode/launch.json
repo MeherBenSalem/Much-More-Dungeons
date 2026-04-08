@@ -16,7 +16,7 @@
       ],
       "vmArgs": [
         "@D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.21.11\\neoforge\\build\\moddev\\clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003dexamplemod%%D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.21.11\\neoforge\\bin\\main"
+        "-Dfml.modFolders\u003dmuchmoredungeons%%D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.21.11\\neoforge\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\neoforge\\run",
       "env": {},
@@ -38,7 +38,7 @@
       ],
       "vmArgs": [
         "@D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.21.11\\neoforge\\build\\moddev\\dataRunVmArgs.txt",
-        "-Dfml.modFolders\u003dexamplemod%%D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.21.11\\neoforge\\bin\\main"
+        "-Dfml.modFolders\u003dmuchmoredungeons%%D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.21.11\\neoforge\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\neoforge\\run",
       "env": {},
@@ -60,7 +60,7 @@
       ],
       "vmArgs": [
         "@D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.21.11\\neoforge\\build\\moddev\\serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003dexamplemod%%D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.21.11\\neoforge\\bin\\main"
+        "-Dfml.modFolders\u003dmuchmoredungeons%%D:\\Projects\\NightBeam\\Much-More-Dungeons\\1.21.11\\neoforge\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\neoforge\\run",
       "env": {},
