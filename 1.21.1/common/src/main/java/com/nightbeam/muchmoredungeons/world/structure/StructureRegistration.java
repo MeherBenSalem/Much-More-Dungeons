@@ -9,47 +9,41 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Registers all custom structure types and structure piece types for Much More Dungeons.
- * Must be called during mod initialization BEFORE world generation happens.
- */
 public class StructureRegistration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("MuchMoreDungeons/Structure");
 
-    // Structure Type — tells Minecraft how to deserialize our custom Structure from JSON
-    public static final StructureType<TowerDungeonStructure> TOWER_DUNGEON_TYPE =
-            Registry.register(
-                    BuiltInRegistries.STRUCTURE_TYPE,
-                    ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "tower_dungeon"),
-                    () -> TowerDungeonStructure.CODEC
-            );
+    public static StructureType<TowerDungeonStructure> TOWER_DUNGEON_TYPE;
+    public static StructurePieceType TOWER_DUNGEON_PIECE_TYPE;
+    public static StructureType<Dungeon2Structure> DUNGEON2_TYPE;
+    public static StructurePieceType DUNGEON2_PIECE_TYPE;
 
-    // Structure Piece Type — tells Minecraft how to deserialize our StructurePiece from NBT (saved chunks)
-    public static final StructurePieceType TOWER_DUNGEON_PIECE_TYPE =
-            Registry.register(
-                    BuiltInRegistries.STRUCTURE_PIECE,
-                    ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "tower_dungeon_piece"),
-                    TowerDungeonPiece::new
-            );
-
-    public static final StructureType<Dungeon2Structure> DUNGEON2_TYPE =
-            Registry.register(
-                    BuiltInRegistries.STRUCTURE_TYPE,
-                    ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "dungeon_t2"),
-                    () -> Dungeon2Structure.CODEC
-            );
-
-    public static final StructurePieceType DUNGEON2_PIECE_TYPE =
-            Registry.register(
-                    BuiltInRegistries.STRUCTURE_PIECE,
-                    ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "dungeon_t2_piece"),
-                    Dungeon2Piece::new
-            );
+    /** Called by Fabric where BuiltInRegistries are not frozen during mod init. */
+    public static void registerAll() {
+        TOWER_DUNGEON_TYPE = Registry.register(
+                BuiltInRegistries.STRUCTURE_TYPE,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "tower_dungeon"),
+                () -> TowerDungeonStructure.CODEC
+        );
+        TOWER_DUNGEON_PIECE_TYPE = Registry.register(
+                BuiltInRegistries.STRUCTURE_PIECE,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "tower_dungeon_piece"),
+                TowerDungeonPiece::new
+        );
+        DUNGEON2_TYPE = Registry.register(
+                BuiltInRegistries.STRUCTURE_TYPE,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "dungeon_t2"),
+                () -> Dungeon2Structure.CODEC
+        );
+        DUNGEON2_PIECE_TYPE = Registry.register(
+                BuiltInRegistries.STRUCTURE_PIECE,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "dungeon_t2_piece"),
+                Dungeon2Piece::new
+        );
+        LOGGER.info("Registered structure types for {}", Constants.MOD_ID);
+    }
 
     public static void init() {
-        LOGGER.info("Registering structure types for {}", Constants.MOD_ID);
-        // Static fields above are initialized when this class is loaded,
-        // which triggers the Registry.register calls.
+        // Registration is handled by each loader's entry point.
     }
 }

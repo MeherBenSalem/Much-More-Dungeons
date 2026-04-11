@@ -13,35 +13,37 @@ public class StructureRegistration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("MuchMoreDungeons/Structure");
 
-    public static final StructureType<TowerDungeonStructure> TOWER_DUNGEON_TYPE =
-            Registry.register(
-                    BuiltInRegistries.STRUCTURE_TYPE,
-                    Identifier.fromNamespaceAndPath(Constants.MOD_ID, "tower_dungeon"),
-                    () -> TowerDungeonStructure.CODEC
-            );
+    public static StructureType<TowerDungeonStructure> TOWER_DUNGEON_TYPE;
+    public static StructurePieceType TOWER_DUNGEON_PIECE_TYPE;
+    public static StructureType<Dungeon2Structure> DUNGEON2_TYPE;
+    public static StructurePieceType DUNGEON2_PIECE_TYPE;
 
-    public static final StructurePieceType TOWER_DUNGEON_PIECE_TYPE =
-            Registry.register(
-                    BuiltInRegistries.STRUCTURE_PIECE,
-                    Identifier.fromNamespaceAndPath(Constants.MOD_ID, "tower_dungeon_piece"),
-                    TowerDungeonPiece::new
-            );
-
-    public static final StructureType<Dungeon2Structure> DUNGEON2_TYPE =
-            Registry.register(
-                    BuiltInRegistries.STRUCTURE_TYPE,
-                    Identifier.fromNamespaceAndPath(Constants.MOD_ID, "dungeon_t2"),
-                    () -> Dungeon2Structure.CODEC
-            );
-
-    public static final StructurePieceType DUNGEON2_PIECE_TYPE =
-            Registry.register(
-                    BuiltInRegistries.STRUCTURE_PIECE,
-                    Identifier.fromNamespaceAndPath(Constants.MOD_ID, "dungeon_t2_piece"),
-                    Dungeon2Piece::new
-            );
+    /** Called by Fabric where BuiltInRegistries are not frozen during mod init. */
+    public static void registerAll() {
+        TOWER_DUNGEON_TYPE = Registry.register(
+                BuiltInRegistries.STRUCTURE_TYPE,
+                Identifier.fromNamespaceAndPath(Constants.MOD_ID, "tower_dungeon"),
+                () -> TowerDungeonStructure.CODEC
+        );
+        TOWER_DUNGEON_PIECE_TYPE = Registry.register(
+                BuiltInRegistries.STRUCTURE_PIECE,
+                Identifier.fromNamespaceAndPath(Constants.MOD_ID, "tower_dungeon_piece"),
+                TowerDungeonPiece::new
+        );
+        DUNGEON2_TYPE = Registry.register(
+                BuiltInRegistries.STRUCTURE_TYPE,
+                Identifier.fromNamespaceAndPath(Constants.MOD_ID, "dungeon_t2"),
+                () -> Dungeon2Structure.CODEC
+        );
+        DUNGEON2_PIECE_TYPE = Registry.register(
+                BuiltInRegistries.STRUCTURE_PIECE,
+                Identifier.fromNamespaceAndPath(Constants.MOD_ID, "dungeon_t2_piece"),
+                Dungeon2Piece::new
+        );
+        LOGGER.info("Registered structure types for {}", Constants.MOD_ID);
+    }
 
     public static void init() {
-        LOGGER.info("Registering structure types for {}", Constants.MOD_ID);
+        // Registration is handled by each loader's entry point.
     }
 }
