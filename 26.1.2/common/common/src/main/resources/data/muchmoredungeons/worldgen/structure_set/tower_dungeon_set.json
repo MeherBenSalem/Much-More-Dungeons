@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "muchmoredungeons:tower_dungeon",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 100,
+    "separation": 50,
+    "salt": 12345
+  }
+}

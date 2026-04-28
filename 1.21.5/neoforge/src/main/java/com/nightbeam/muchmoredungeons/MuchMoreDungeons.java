@@ -2,6 +2,8 @@ package com.nightbeam.muchmoredungeons;
 
 import com.nightbeam.muchmoredungeons.world.structure.Dungeon2Piece;
 import com.nightbeam.muchmoredungeons.world.structure.Dungeon2Structure;
+import com.nightbeam.muchmoredungeons.world.structure.OutdoorVillaPiece;
+import com.nightbeam.muchmoredungeons.world.structure.OutdoorVillaStructure;
 import com.nightbeam.muchmoredungeons.world.structure.StructureRegistration;
 import com.nightbeam.muchmoredungeons.world.structure.TowerDungeonPiece;
 import com.nightbeam.muchmoredungeons.world.structure.TowerDungeonStructure;
@@ -30,6 +32,10 @@ public class MuchMoreDungeons {
             STRUCTURE_TYPES.register("dungeon_t2", () -> () -> Dungeon2Structure.CODEC);
     private static final DeferredHolder<StructurePieceType, StructurePieceType> DUNGEON2_PIECE_TYPE =
             STRUCTURE_PIECES.register("dungeon_t2_piece", () -> Dungeon2Piece::new);
+    private static final DeferredHolder<StructureType<?>, StructureType<OutdoorVillaStructure>> OUTDOOR_VILLA_TYPE =
+            STRUCTURE_TYPES.register("outdoor_villa", () -> () -> OutdoorVillaStructure.CODEC);
+    private static final DeferredHolder<StructurePieceType, StructurePieceType> OUTDOOR_VILLA_PIECE_TYPE =
+            STRUCTURE_PIECES.register("outdoor_villa_piece", () -> OutdoorVillaPiece::new);
 
     public MuchMoreDungeons(IEventBus eventBus) {
         STRUCTURE_TYPES.register(eventBus);
@@ -42,6 +48,8 @@ public class MuchMoreDungeons {
         StructureRegistration.TOWER_DUNGEON_PIECE_TYPE = TOWER_DUNGEON_PIECE_TYPE.get();
         StructureRegistration.DUNGEON2_TYPE = DUNGEON2_TYPE.get();
         StructureRegistration.DUNGEON2_PIECE_TYPE = DUNGEON2_PIECE_TYPE.get();
+                StructureRegistration.OUTDOOR_VILLA_TYPE = OUTDOOR_VILLA_TYPE.get();
+                StructureRegistration.OUTDOOR_VILLA_PIECE_TYPE = OUTDOOR_VILLA_PIECE_TYPE.get();
         CommonClass.init();
     }
 }

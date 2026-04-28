@@ -11,7 +11,7 @@ $versionLoaders = [ordered]@{
     "1.21.5"  = @("fabric", "neoforge")
     "1.21.8"  = @("fabric", "neoforge")
     "1.21.11" = @("fabric", "neoforge")
-    "26.1.1"  = @("fabric", "neoforge")
+    "26.1.2"  = @("fabric", "neoforge")
 }
 
 # Recreate dist folder
@@ -25,6 +25,9 @@ $failed  = @()
 foreach ($ver in $versionLoaders.Keys) {
     $loaders = $versionLoaders[$ver]
     $dir = Join-Path $root $ver
+    $propertiesPath = Join-Path $dir "gradle.properties"
+    $currentVersion = (Get-Content $propertiesPath | Where-Object { $_ -match '^version=' } | Select-Object -First 1)
+    $currentVersion = $currentVersion.Split('=')[1].Trim()
     Write-Host "========================================" -ForegroundColor Cyan
     Write-Host " Building $ver ($($loaders -join ', '))" -ForegroundColor Cyan
     Write-Host "========================================" -ForegroundColor Cyan
@@ -49,7 +52,10 @@ foreach ($ver in $versionLoaders.Keys) {
         $libDir = Join-Path $dir "$loader\build\libs"
         if (-not (Test-Path $libDir)) { continue }
         Get-ChildItem $libDir -Filter "*.jar" |
-            Where-Object { $_.Name -notmatch "-dev|-sources|-javadoc|-slim" } |
+            Where-Object {
+                $_.Name -notmatch "-dev|-sources|-javadoc|-slim" -and
+                $_.Name -match "-$([regex]::Escape($currentVersion))\.jar$"
+            } |
             ForEach-Object {
                 Copy-Item $_.FullName (Join-Path $dist $_.Name) -Force
                 Write-Host "  Collected: $($_.Name)" -ForegroundColor Green
