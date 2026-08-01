@@ -1,4 +1,4 @@
-# build-all.ps1
+﻿# build-all.ps1
 # Builds Much More Dungeons for all versions and collects JARs into dist/
 
 $root  = $PSScriptRoot
@@ -8,10 +8,8 @@ $dist  = Join-Path $root "dist"
 $versionLoaders = [ordered]@{
     "1.20.1"  = @("fabric", "forge")
     "1.21.1"  = @("fabric", "neoforge")
-    "1.21.5"  = @("fabric", "neoforge")
-    "1.21.8"  = @("fabric", "neoforge")
-    "1.21.11" = @("fabric", "neoforge")
     "26.1.2"  = @("fabric", "neoforge")
+    "26.2"    = @("fabric", "neoforge")
 }
 
 # Recreate dist folder

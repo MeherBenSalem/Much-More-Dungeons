@@ -1,7 +1,0 @@
-{
-  "type": "muchmoredungeons:dungeon_t2",
-  "biomes": "#muchmoredungeons:has_structure/dungeon_t2",
-  "spawn_overrides": {},
-  "step": "surface_structures",
-  "terrain_adaptation": "beard_thin"
-}

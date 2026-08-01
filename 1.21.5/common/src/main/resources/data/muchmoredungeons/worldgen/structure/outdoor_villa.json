@@ -1,7 +1,0 @@
-{
-  "type": "muchmoredungeons:outdoor_villa",
-  "biomes": "#muchmoredungeons:has_structure/outdoor_villa",
-  "spawn_overrides": {},
-  "step": "surface_structures",
-  "terrain_adaptation": "beard_thin"
-}
