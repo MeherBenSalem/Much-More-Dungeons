@@ -17,8 +17,10 @@ public class StructureRegistration {
     public static StructurePieceType TOWER_DUNGEON_PIECE_TYPE;
     public static StructureType<Dungeon2Structure> DUNGEON2_TYPE;
     public static StructurePieceType DUNGEON2_PIECE_TYPE;
-        public static StructureType<OutdoorVillaStructure> OUTDOOR_VILLA_TYPE;
-        public static StructurePieceType OUTDOOR_VILLA_PIECE_TYPE;
+    public static StructureType<OutdoorVillaStructure> OUTDOOR_VILLA_TYPE;
+    public static StructurePieceType OUTDOOR_VILLA_PIECE_TYPE;
+    public static StructureType<SoulfireCryptStructure> SOULFIRE_CRYPT_TYPE;
+    public static StructurePieceType SOULFIRE_CRYPT_PIECE_TYPE;
 
     /** Called by Fabric where BuiltInRegistries are not frozen during mod init. */
     public static void registerAll() {
@@ -51,6 +53,16 @@ public class StructureRegistration {
                 BuiltInRegistries.STRUCTURE_PIECE,
                 ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "outdoor_villa_piece"),
                 OutdoorVillaPiece::new
+        );
+        SOULFIRE_CRYPT_TYPE = Registry.register(
+                BuiltInRegistries.STRUCTURE_TYPE,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "soulfire_crypt"),
+                () -> SoulfireCryptStructure.CODEC
+        );
+        SOULFIRE_CRYPT_PIECE_TYPE = Registry.register(
+                BuiltInRegistries.STRUCTURE_PIECE,
+                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "soulfire_crypt_piece"),
+                SoulfireCryptPiece::new
         );
         LOGGER.info("Registered structure types for {}", Constants.MOD_ID);
     }

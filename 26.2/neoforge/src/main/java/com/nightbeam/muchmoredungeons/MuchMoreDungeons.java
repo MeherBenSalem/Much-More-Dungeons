@@ -4,6 +4,8 @@ import com.nightbeam.muchmoredungeons.world.structure.Dungeon2Piece;
 import com.nightbeam.muchmoredungeons.world.structure.Dungeon2Structure;
 import com.nightbeam.muchmoredungeons.world.structure.OutdoorVillaPiece;
 import com.nightbeam.muchmoredungeons.world.structure.OutdoorVillaStructure;
+import com.nightbeam.muchmoredungeons.world.structure.SoulfireCryptPiece;
+import com.nightbeam.muchmoredungeons.world.structure.SoulfireCryptStructure;
 import com.nightbeam.muchmoredungeons.world.structure.StructureRegistration;
 import com.nightbeam.muchmoredungeons.world.structure.TowerDungeonPiece;
 import com.nightbeam.muchmoredungeons.world.structure.TowerDungeonStructure;
@@ -36,6 +38,10 @@ public class MuchMoreDungeons {
             STRUCTURE_TYPES.register("outdoor_villa", () -> () -> OutdoorVillaStructure.CODEC);
     private static final DeferredHolder<StructurePieceType, StructurePieceType> OUTDOOR_VILLA_PIECE_TYPE =
             STRUCTURE_PIECES.register("outdoor_villa_piece", () -> OutdoorVillaPiece::new);
+    private static final DeferredHolder<StructureType<?>, StructureType<SoulfireCryptStructure>> SOULFIRE_CRYPT_TYPE =
+            STRUCTURE_TYPES.register("soulfire_crypt", () -> () -> SoulfireCryptStructure.CODEC);
+    private static final DeferredHolder<StructurePieceType, StructurePieceType> SOULFIRE_CRYPT_PIECE_TYPE =
+            STRUCTURE_PIECES.register("soulfire_crypt_piece", () -> SoulfireCryptPiece::new);
 
     public MuchMoreDungeons(IEventBus eventBus) {
         STRUCTURE_TYPES.register(eventBus);
@@ -50,6 +56,8 @@ public class MuchMoreDungeons {
         StructureRegistration.DUNGEON2_PIECE_TYPE = DUNGEON2_PIECE_TYPE.get();
                 StructureRegistration.OUTDOOR_VILLA_TYPE = OUTDOOR_VILLA_TYPE.get();
                 StructureRegistration.OUTDOOR_VILLA_PIECE_TYPE = OUTDOOR_VILLA_PIECE_TYPE.get();
+        StructureRegistration.SOULFIRE_CRYPT_TYPE = SOULFIRE_CRYPT_TYPE.get();
+        StructureRegistration.SOULFIRE_CRYPT_PIECE_TYPE = SOULFIRE_CRYPT_PIECE_TYPE.get();
         CommonClass.init();
     }
 }

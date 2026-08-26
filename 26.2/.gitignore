@@ -11,8 +11,10 @@ out
 *.ipr
 *.iws
 *.iml
-.idea/*
-!.idea/scopes
+.idea/
+
+# vscode
+.vscode/
 
 # gradle
 build
@@ -21,4 +23,7 @@ build
 # other
 eclipse
 run
-runs
+dist
+*.log
+.env
+.env.*

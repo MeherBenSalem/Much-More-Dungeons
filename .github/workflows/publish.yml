@@ -149,7 +149,7 @@ jobs:
           CURSEFORGE_ID: ${{ vars.CURSEFORGE_ID }}
           VERSION: ${{ steps.ver.outputs.version }}
           JAR_LIST: ${{ steps.jars.outputs.list }}
-          CHANGELOG_FILE: Much-More-Dungeons-${{ steps.ver.outputs.version }}-PatchNotes.md
+          CHANGELOG_FILE: CHANGELOG.md
           PLATFORMS: ${{ inputs.platforms || 'both' }}
         shell: bash
         run: |

@@ -1,0 +1,42 @@
+# Build outputs
+dist/
+releases/
+**/build/
+**/.gradle/
+
+# IDE
+.idea/
+**/.idea/
+.vscode/
+**/.vscode/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+.metadata/
+bin/
+out/
+eclipse/
+*.launch
+
+# Runtime / local
+run/
+**/run/
+**/runs/
+.env
+.env.*
+!.env.example
+
+# OS / logs / temp
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*~
+
+# Agent / local tooling
+graphify-out/
+.cursor/

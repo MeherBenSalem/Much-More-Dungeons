@@ -1,0 +1,25 @@
+{
+  "type": "muchmoredungeons:soulfire_crypt",
+  "biomes": "#muchmoredungeons:has_structure/soulfire_crypt",
+  "spawn_overrides": {
+    "monster": {
+      "bounding_box": "piece",
+      "spawns": [
+        {
+          "type": "minecraft:wither_skeleton",
+          "weight": 80,
+          "minCount": 1,
+          "maxCount": 2
+        },
+        {
+          "type": "minecraft:stray",
+          "weight": 60,
+          "minCount": 1,
+          "maxCount": 3
+        }
+      ]
+    }
+  },
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}
