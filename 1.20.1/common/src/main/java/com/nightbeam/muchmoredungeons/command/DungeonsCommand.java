@@ -117,7 +117,8 @@ public final class DungeonsCommand {
                         if (!"none".equals(table)) {
                             chests.merge(table, 1, Integer::sum);
                         }
-                        if (table.endsWith("_vault")) {
+                        // Its own vault only: another dungeon's can lie inside this one's box (a labyrinth under it).
+                        if (table.endsWith("area".equals(label) ? "_vault" : "/" + label + "_vault")) {
                             vault = be.getBlockPos();
                         }
                     } else if (be instanceof SpawnerBlockEntity spawner) {
