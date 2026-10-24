@@ -1,0 +1,43 @@
+{
+  "parent": "muchmoredungeons:discover_dungeon_t2",
+  "display": {
+    "icon": {
+      "item": "minecraft:diamond_sword"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.slay_dungeon_t2_guardian.title",
+      "fallback": "Warlord Fallen"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.slay_dungeon_t2_guardian.description",
+      "fallback": "Defeat the Keep Warlord"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "killed": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "nbt": "{Tags:[\"muchmoredungeons.guardian.dungeon_t2\"]}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "killed"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

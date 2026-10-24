@@ -1,9 +1,14 @@
 {
   "values": [
-    "minecraft:swamp",
-    "minecraft:jungle",
-    "minecraft:desert",
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:meadow",
+    "minecraft:flower_forest",
     "minecraft:savanna",
-    "minecraft:badlands"
+    "minecraft:savanna_plateau",
+    {
+      "id": "#c:is_plains",
+      "required": false
+    }
   ]
 }

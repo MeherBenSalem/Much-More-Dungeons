@@ -1,0 +1,42 @@
+{
+  "parent": "muchmoredungeons:root",
+  "display": {
+    "icon": {
+      "id": "minecraft:barrel"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.discover_outdoor_villa.title",
+      "fallback": "Contraband"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.discover_outdoor_villa.description",
+      "fallback": "Find a Smuggler's Villa"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "entered": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "muchmoredungeons:outdoor_villa"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "entered"
+    ]
+  ]
+}

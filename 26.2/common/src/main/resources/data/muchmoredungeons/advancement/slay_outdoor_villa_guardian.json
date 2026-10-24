@@ -1,0 +1,43 @@
+{
+  "parent": "muchmoredungeons:discover_outdoor_villa",
+  "display": {
+    "icon": {
+      "id": "minecraft:iron_axe"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.slay_outdoor_villa_guardian.title",
+      "fallback": "Chief Out"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.slay_outdoor_villa_guardian.description",
+      "fallback": "Defeat the Smuggler Chief"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "killed": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:nbt": "{Tags:[\"muchmoredungeons.guardian.outdoor_villa\"]}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "killed"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

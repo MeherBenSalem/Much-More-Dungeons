@@ -19,6 +19,12 @@ neoForge {
             client()
             gameDirectory = this.mkdir(this.file("runs/client"))
         }
+        // QA client: joins a server on localhost:25565 straight away (see tools/qa/).
+        qaClient {
+            client()
+            gameDirectory = this.mkdir(this.file('runs/client'))
+            programArguments.addAll '--quickPlayMultiplayer', 'localhost:25565', '--username', 'LootGoblin', '--width', '1920', '--height', '1080'
+        }
         data {
             clientData()
             gameDirectory = this.mkdir(this.file("runs/data"))

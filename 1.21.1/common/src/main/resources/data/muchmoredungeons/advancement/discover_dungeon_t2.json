@@ -1,0 +1,42 @@
+{
+  "parent": "muchmoredungeons:root",
+  "display": {
+    "icon": {
+      "id": "minecraft:iron_bars"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.discover_dungeon_t2.title",
+      "fallback": "Cursed Ground"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.discover_dungeon_t2.description",
+      "fallback": "Enter a Cursed Keep"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "entered": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "muchmoredungeons:dungeon_t2"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "entered"
+    ]
+  ]
+}

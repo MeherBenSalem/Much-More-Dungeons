@@ -1,0 +1,42 @@
+{
+  "parent": "muchmoredungeons:root",
+  "display": {
+    "icon": {
+      "item": "minecraft:soul_lantern"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.discover_soulfire_crypt.title",
+      "fallback": "Cold Fire"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.discover_soulfire_crypt.description",
+      "fallback": "Enter a Soulfire Crypt"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "entered": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "muchmoredungeons:soulfire_crypt"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "entered"
+    ]
+  ]
+}

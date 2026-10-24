@@ -1,9 +1,14 @@
 {
   "values": [
-    "minecraft:swamp",
-    "minecraft:jungle",
     "minecraft:desert",
-    "minecraft:savanna",
-    "minecraft:badlands"
+    "#minecraft:is_badlands",
+    "minecraft:swamp",
+    "minecraft:mangrove_swamp",
+    "#minecraft:is_jungle",
+    "#minecraft:is_savanna",
+    {
+      "id": "#c:is_desert",
+      "required": false
+    }
   ]
 }

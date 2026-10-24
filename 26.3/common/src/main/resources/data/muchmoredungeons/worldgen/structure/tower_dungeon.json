@@ -1,0 +1,7 @@
+{
+  "type": "muchmoredungeons:tower_dungeon",
+  "biomes": "#muchmoredungeons:has_structure/tower_dungeon",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin",
+  "spawn_overrides": {}
+}

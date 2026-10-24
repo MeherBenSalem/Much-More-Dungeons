@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
-"""Generate soulfire_crypt.nbt structure template for Much More Dungeons."""
+"""Generate the soulfire_crypt.nbt structure template for every workspace.
+
+Run from anywhere: python3 tools/generate_soulfire_crypt.py (needs nbtlib)."""
 
 from pathlib import Path
 
 from nbtlib import Byte, Compound, Double, File, Float, Int, List, Long, Short, String
 
-W, H, D = 21, 10, 25  # x, y, z
+W0, H0, D0 = 21, 10, 25  # the crypt itself (x, y, z)
+OX, OZ = 2, 4  # margin for the buttresses and the entrance portico (the portico is on the z = 0 side)
+W, H, D = W0 + 2 * OX, H0 + 3, D0 + OZ + 2
+VOID = -1  # no block in the template: the ground is left as it is
 
 
 def block(name, **props):
@@ -38,27 +43,47 @@ PALETTE = [
     block("minecraft:structure_block", mode="data"),  # 19 — data markers
     block("minecraft:polished_blackstone_brick_wall", east="none", north="none", south="none", up="true", west="none", waterlogged="false"),  # 20
     block("minecraft:deepslate_tile_slab", type="bottom", waterlogged="false"),  # 21
+    block("minecraft:soul_lantern", hanging="true"),  # 22
+    block("minecraft:deepslate_tiles"),  # 23
+    block("minecraft:cracked_deepslate_tiles"),  # 24
+    block("minecraft:polished_blackstone_brick_stairs", facing="south", half="bottom", shape="straight", waterlogged="false"),  # 25
+    block("minecraft:polished_blackstone_brick_slab", type="bottom", waterlogged="false"),  # 26
+    block("minecraft:chiseled_polished_blackstone"),  # 27
+    block("minecraft:soul_campfire", facing="south", lit="true", signal_fire="false", waterlogged="false"),  # 28
+    block("minecraft:polished_blackstone_brick_stairs", facing="north", half="top", shape="straight", waterlogged="false"),  # 29
+    block("minecraft:deepslate_brick_stairs", facing="west", half="top", shape="straight", waterlogged="false"),  # 30
+    block("minecraft:deepslate_brick_stairs", facing="east", half="top", shape="straight", waterlogged="false"),  # 31
+    block("minecraft:cobbled_deepslate"),  # 32
 ]
 
 AIR, BRICK, CRACK, BLACK, PBLACK, SSAND, SSOIL, COBS, SFIRE, SLAN, CHAIN = range(11)
 STAIR_E, STAIR_W, STAIR_S, STAIR_N, BARS, SPAWNER, CHEST_S, CHEST_N, SBLOCK, WALL, SLAB = range(11, 22)
+HANG, TILES, CTILES, PSTAIR_S, PSLAB, CHISEL, CAMPFIRE, PSTAIR_N_TOP, STAIR_W_TOP, STAIR_E_TOP, COBBLED = range(22, 33)
 
-grid = [[[AIR for _ in range(D)] for _ in range(H)] for _ in range(W)]
+grid = [[[VOID for _ in range(D)] for _ in range(H)] for _ in range(W)]
 block_nbt = {}  # (x,y,z) -> Compound
 entities = []
 
 
-def fill(x0, y0, z0, x1, y1, z1, state):
-    for x in range(x0, x1 + 1):
-        for y in range(y0, y1 + 1):
-            for z in range(z0, z1 + 1):
+def fill_abs(x0, y0, z0, x1, y1, z1, state):
+    for x in range(min(x0, x1), max(x0, x1) + 1):
+        for y in range(min(y0, y1), max(y0, y1) + 1):
+            for z in range(min(z0, z1), max(z0, z1) + 1):
                 if 0 <= x < W and 0 <= y < H and 0 <= z < D:
                     grid[x][y][z] = state
 
 
+def set_abs(x, y, z, state):
+    fill_abs(x, y, z, x, y, z, state)
+
+
+# The crypt's own coordinates (0..20, 0..9, 0..24), shifted into the margin.
+def fill(x0, y0, z0, x1, y1, z1, state):
+    fill_abs(x0 + OX, y0, z0 + OZ, x1 + OX, y1, z1 + OZ, state)
+
+
 def setb(x, y, z, state):
-    if 0 <= x < W and 0 <= y < H and 0 <= z < D:
-        grid[x][y][z] = state
+    set_abs(x + OX, y, z + OZ, state)
 
 
 def spawner_nbt(entity_id: str) -> Compound:
@@ -79,9 +104,9 @@ def spawner_nbt(entity_id: str) -> Compound:
     })
 
 
-def chest_nbt() -> Compound:
+def chest_nbt(table: str = "soulfire_crypt") -> Compound:
     return Compound({
-        "LootTable": String("muchmoredungeons:chests/soulfire_crypt"),
+        "LootTable": String(f"muchmoredungeons:chests/{table}"),
         "id": String("minecraft:chest"),
     })
 
@@ -170,8 +195,6 @@ fill(14, 1, 3, 18, 4, 6, AIR)
 fill(14, 1, 3, 18, 1, 6, CRACK)
 setb(16, 1, 4, CHEST_S)
 block_nbt[(16, 1, 4)] = chest_nbt()
-setb(16, 1, 5, SBLOCK)
-block_nbt[(16, 1, 5)] = structure_marker("chest")
 setb(15, 2, 3, COBS)
 setb(17, 2, 3, COBS)
 
@@ -180,8 +203,6 @@ fill(2, 1, 3, 6, 4, 6, AIR)
 fill(2, 1, 3, 6, 1, 6, CRACK)
 setb(4, 1, 4, CHEST_S)
 block_nbt[(4, 1, 4)] = chest_nbt()
-setb(4, 1, 5, SBLOCK)
-block_nbt[(4, 1, 5)] = structure_marker("chest")
 
 # Relic chamber arch
 fill(6, 1, 15, 14, 6, 15, BRICK)
@@ -201,36 +222,11 @@ setb(11, 2, 21, SLAN)
 
 # Boss chest behind altar
 setb(10, 1, 22, CHEST_N)
-block_nbt[(10, 1, 22)] = chest_nbt()
-setb(10, 2, 22, SBLOCK)
-block_nbt[(10, 2, 22)] = structure_marker("chest")
+block_nbt[(10, 1, 22)] = chest_nbt("soulfire_crypt_vault")
 
-# Guardian marker (structure block) + embedded entity for 1.20.1 jigsaw
+# Guardian marker: the mod spawns the Cinder Warden here when the crypt generates.
 setb(10, 1, 19, SBLOCK)
 block_nbt[(10, 1, 19)] = structure_marker("guardian")
-
-# Named Cinder Warden entity (works for jigsaw + template placement)
-entities.append(Compound({
-    "pos": List[Double]([Double(10.5), Double(2.0), Double(19.5)]),
-    "blockPos": List[Int]([Int(10), Int(2), Int(19)]),
-    "nbt": Compound({
-        "id": String("minecraft:wither_skeleton"),
-        "CustomName": String('{"text":"Cinder Warden","color":"dark_red","bold":true}'),
-        "CustomNameVisible": Byte(1),
-        "PersistenceRequired": Byte(1),
-        "Health": Float(40.0),
-        "HandItems": List[Compound]([
-            Compound({"id": String("minecraft:stone_sword"), "Count": Byte(1)}),
-            Compound({}),
-        ]),
-        "ArmorItems": List[Compound]([
-            Compound({}),
-            Compound({}),
-            Compound({"id": String("minecraft:chainmail_chestplate"), "Count": Byte(1)}),
-            Compound({}),
-        ]),
-    }),
-}))
 
 # Corner cracked accents
 for x, z in ((1, 1), (W - 2, 1), (1, D - 2), (W - 2, D - 2)):
@@ -238,34 +234,91 @@ for x, z in ((1, 1), (W - 2, 1), (1, D - 2), (W - 2, D - 2)):
     setb(x, H - 1, z, COBS)
 
 # Ceiling chains + hanging lanterns in nave
-PALETTE.append(block("minecraft:soul_lantern", hanging="true"))  # 22
-HANG = 22
 for x, z in ((10, 9), (10, 11), (10, 13)):
     setb(x, H - 2, z, CHAIN)
     setb(x, H - 3, z, HANG)
+
+# --- Exterior ---
+# Weathering: a fixed pattern of cracked bricks and tiles in the outer walls.
+for x in range(W0):
+    for y in range(1, H0 - 1):
+        for z in range(D0):
+            if (x in (0, W0 - 1) or z in (0, D0 - 1)) and grid[x + OX][y][z + OZ] == BRICK:
+                h = (x * 73856093 ^ y * 19349663 ^ z * 83492791) % 11
+                if h == 0:
+                    setb(x, y, z, CRACK)
+                elif h in (1, 2):
+                    setb(x, y, z, TILES)
+                elif h == 3:
+                    setb(x, y, z, CTILES)
+
+# A plinth course around the base and buttresses every four blocks along the long walls.
+for x in range(-1, W0 + 1):
+    for z in (-1, D0):
+        setb(x, 0, z, COBBLED)
+for z in range(-1, D0 + 1):
+    for x in (-1, W0):
+        setb(x, 0, z, COBBLED)
+for z in range(2, D0 - 1, 4):
+    for x, top in ((-1, STAIR_W), (W0, STAIR_E)):
+        fill(x, 0, z, x, 5, z, PBLACK)
+        setb(x, 6, z, top)
+for x in range(4, W0 - 3, 4):
+    if 8 <= x <= 12:
+        continue
+    setb(x, 0, D0, PBLACK)
+    fill(x, 1, D0, x, 5, D0, PBLACK)
+    setb(x, 6, D0, STAIR_N)
+
+# Parapet and corner posts with soul lanterns on the roof.
+for x in range(W0):
+    for z in range(D0):
+        if x in (0, W0 - 1) or z in (0, D0 - 1):
+            setb(x, H0, z, WALL if (x + z) % 2 == 0 else PSLAB)
+for x, z in ((0, 0), (W0 - 1, 0), (0, D0 - 1), (W0 - 1, D0 - 1)):
+    fill(x, H0, z, x, H0 + 1, z, PBLACK)
+    setb(x, H0 + 2, z, SLAN)
+# A raised ridge of tiles over the relic chamber.
+fill(7, H0, 16, 13, H0, 23, TILES)
+fill(9, H0 + 1, 18, 11, H0 + 1, 21, PSLAB)
+
+# Entrance portico: two pillars, a lintel with hanging lanterns, soul campfires and a path.
+for x in (7, 13):
+    fill(x, 0, -3, x, 4, -3, PBLACK)
+    setb(x, 5, -3, CHISEL)
+    setb(x, 0, -1, CAMPFIRE)
+fill(7, 5, -2, 13, 5, -1, PBLACK)
+fill(8, 5, -3, 12, 5, -3, PSTAIR_N_TOP)
+fill(7, 6, -3, 13, 6, -1, PSLAB)
+setb(10, 6, -2, CHISEL)
+for x in (9, 11):
+    setb(x, 4, -2, HANG)
+fill(8, 0, -4, 12, 0, -1, SSOIL)
+fill(9, 0, -4, 11, 0, -1, CRACK)
+fill(8, 1, -3, 12, 4, -1, AIR)
+fill(9, 1, 0, 11, 3, 0, AIR)
 
 blocks = []
 for x in range(W):
     for y in range(H):
         for z in range(D):
+            # Air is stored too, so the crypt clears the ground it is dug into; the margin is left to the terrain.
             state = grid[x][y][z]
-            if state == AIR:
+            if state == VOID:
                 continue
             entry = Compound({
                 # Must be List[Int], not IntArray — otherwise Minecraft loads an empty template
                 "pos": List[Int]([Int(x), Int(y), Int(z)]),
                 "state": Int(state),
             })
-            if (x, y, z) in block_nbt:
-                entry["nbt"] = block_nbt[(x, y, z)]
+            if (x - OX, y, z - OZ) in block_nbt:
+                entry["nbt"] = block_nbt[(x - OX, y, z - OZ)]
             blocks.append(entry)
 
 repo = Path(__file__).resolve().parents[1]
-targets = [
-    (repo / "1.20.1/common/src/main/resources/data/muchmoredungeons/structures/soulfire_crypt.nbt", 3465),
-    (repo / "1.21.1/common/src/main/resources/data/muchmoredungeons/structure/soulfire_crypt.nbt", 3955),
-    (repo / "26.1.2/common/src/main/resources/data/muchmoredungeons/structure/soulfire_crypt.nbt", 3955),
-    (repo / "26.2/common/src/main/resources/data/muchmoredungeons/structure/soulfire_crypt.nbt", 3955),
+targets = [(repo / "1.20.1/common/src/main/resources/data/muchmoredungeons/structures/soulfire_crypt.nbt", 3465)] + [
+    (repo / f"{ws}/common/src/main/resources/data/muchmoredungeons/structure/soulfire_crypt.nbt", 3955)
+    for ws in ("1.21.1", "26.1.2", "26.2", "26.3")
 ]
 
 for path, data_version in targets:

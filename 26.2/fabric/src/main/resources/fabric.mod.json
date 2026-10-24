@@ -8,29 +8,22 @@
         "${mod_author}"
     ],
     "contact": {
-        "homepage": "https://nightbeam.cloud",
-        "sources": "https://github.com/YourGitHub/MuchMoreDungeons"
+        "homepage": "https://modrinth.com/mod/much-more-dungeons",
+        "sources": "https://github.com/MeherBenSalem/Much-More-Dungeons",
+        "issues": "https://github.com/MeherBenSalem/Much-More-Dungeons/issues"
     },
     "license": "${license}",
-    "icon": "${mod_id}.png",
+    "icon": "logo.png",
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.nightbeam.muchmoredungeons.MuchMoreDungeons"
+            "com.nightbeam.muchmoredungeons.fabric.MuchMoreDungeonsFabric"
         ]
     },
-    "mixins": [
-        "${mod_id}.mixins.json",
-        "${mod_id}.fabric.mixins.json"
-    ],
     "depends": {
         "fabricloader": ">=${fabric_loader_version}",
         "fabric-api": "*",
-        "minecraft": "~${minecraft_version}",
+        "minecraft": "${minecraft_version}",
         "java": ">=${java_version}"
-    },
-    "suggests": {
-        "another-mod": "*"
     }
 }
-  

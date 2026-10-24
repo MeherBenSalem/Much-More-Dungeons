@@ -1,0 +1,42 @@
+{
+  "parent": "muchmoredungeons:root",
+  "display": {
+    "icon": {
+      "id": "minecraft:amethyst_shard"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.discover_tower_dungeon.title",
+      "fallback": "Spellbound Heights"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.discover_tower_dungeon.description",
+      "fallback": "Find an Arcane Spire"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "entered": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "muchmoredungeons:tower_dungeon"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "entered"
+    ]
+  ]
+}

@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
-    "id": "muchmoredungeons",
+    "id": "${mod_id}",
     "version": "${version}",
     "name": "${mod_name}",
     "description": "${description}",
@@ -8,21 +8,18 @@
         "${mod_author}"
     ],
     "contact": {
-        "homepage": "https://nightbeam.cloud",
-        "sources": "https://github.com/YourGitHub/MuchMoreDungeons"
+        "homepage": "https://modrinth.com/mod/much-more-dungeons",
+        "sources": "https://github.com/MeherBenSalem/Much-More-Dungeons",
+        "issues": "https://github.com/MeherBenSalem/Much-More-Dungeons/issues"
     },
     "license": "${license}",
-    "icon": "assets/muchmoredungeons/muchmoredungeons.png",
+    "icon": "logo.png",
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.nightbeam.muchmoredungeons.MuchMoreDungeons"
+            "com.nightbeam.muchmoredungeons.fabric.MuchMoreDungeonsFabric"
         ]
     },
-    "mixins": [
-        "muchmoredungeons.mixins.json",
-        "muchmoredungeons.fabric.mixins.json"
-    ],
     "depends": {
         "fabricloader": ">=${fabric_loader_version}",
         "fabric-api": "*",
@@ -30,4 +27,3 @@
         "java": ">=${java_version}"
     }
 }
-  

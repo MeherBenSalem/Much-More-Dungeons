@@ -3,11 +3,17 @@
     "minecraft:snowy_plains",
     "minecraft:snowy_taiga",
     "minecraft:ice_spikes",
-    "minecraft:frozen_river",
-    "minecraft:snowy_beach",
     "minecraft:grove",
-    "minecraft:frozen_peaks",
-    "minecraft:jagged_peaks",
-    "minecraft:snowy_slopes"
+    "minecraft:snowy_slopes",
+    "minecraft:taiga",
+    "minecraft:old_growth_pine_taiga",
+    "minecraft:old_growth_spruce_taiga",
+    "minecraft:windswept_hills",
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:windswept_forest",
+    {
+      "id": "#c:is_snowy",
+      "required": false
+    }
   ]
 }

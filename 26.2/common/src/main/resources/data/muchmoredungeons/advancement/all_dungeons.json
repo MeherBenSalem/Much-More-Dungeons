@@ -1,0 +1,102 @@
+{
+  "parent": "muchmoredungeons:root",
+  "display": {
+    "icon": {
+      "id": "minecraft:filled_map"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.all_dungeons.title",
+      "fallback": "Dungeon Delver"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.all_dungeons.description",
+      "fallback": "Enter all four dungeons"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "outdoor_villa": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "muchmoredungeons:outdoor_villa"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "tower_dungeon": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "muchmoredungeons:tower_dungeon"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "dungeon_t2": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "muchmoredungeons:dungeon_t2"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "soulfire_crypt": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "muchmoredungeons:soulfire_crypt"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "outdoor_villa"
+    ],
+    [
+      "tower_dungeon"
+    ],
+    [
+      "dungeon_t2"
+    ],
+    [
+      "soulfire_crypt"
+    ]
+  ],
+  "rewards": {
+    "experience": 300
+  }
+}
