@@ -222,8 +222,16 @@ def client_checks(server, located, shots_dir):
             check(f'client {dungeon}: dungeon ready', False, info.get('raw'))
             continue
         # The guardian stands inside the dungeon: walk in next to it.
-        # Several of a labyrinth can be loaded (the Abyssal Halls lie under every biome): take the located one's.
-        server.cmd(f'execute in {dim} positioned {x} 0 {z} run tp {PLAYER} @e[tag={NS}.guardian.{dungeon},sort=nearest,limit=1]')
+        # Only this dungeon's guardian (inside its box): another one may be loaded elsewhere (the Abyssal Halls lie
+        # under every biome, one under spawn). Its entity loads a little after the chunks, so wait for it.
+        x1, y1, z1, x2, y2, z2 = info['box']
+        guardian = (f'@e[tag={NS}.guardian.{dungeon},x={x1 - 8},y={y1 - 8},z={z1 - 8},'
+                    f'dx={x2 - x1 + 16},dy={y2 - y1 + 16},dz={z2 - z1 + 16},limit=1]')
+        for _ in range(20):
+            if 'passed' in server.cmd(f'execute in {dim} if entity {guardian}').lower():
+                break
+            time.sleep(3)
+        server.cmd(f'execute in {dim} run tp {PLAYER} {guardian}')
         adv = ''
         for _ in range(15):
             time.sleep(2)
@@ -237,7 +245,7 @@ def client_checks(server, located, shots_dir):
             s.hud(True)
         weapon = DUNGEONS[dungeon][2]
         server.cmd(f'clear {PLAYER}')
-        hit = server.cmd(f'execute in {dim} at {PLAYER} run damage @e[tag={NS}.guardian.{dungeon},sort=nearest,limit=1] 10000 minecraft:player_attack by {PLAYER}')
+        hit = server.cmd(f'execute in {dim} run damage {guardian} 10000 minecraft:player_attack by {PLAYER}')
         time.sleep(2)
         if weapon:
             # The player stands on the guardian, so the weapon is on the ground or already picked up.
