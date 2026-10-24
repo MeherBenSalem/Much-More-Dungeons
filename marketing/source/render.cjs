@@ -227,7 +227,7 @@ const assets = {
       'Under the Overworld’s biomes, deep below everything, and in the Nether'],
     art: `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
       ${LABYRINTHS.map((d) => `<div style="position:relative">${framed(region(d.key + '.jpg', 240, 135, 1440, 810, 300), `border-color:${d.color}`)}
-        <div style="position:absolute;left:8px;bottom:8px"><span class="tag" style="border:2px solid ${d.color};color:${d.color};font-size:13px;padding:4px 9px 3px">${d.name}</span></div></div>`).join('')}</div>
+        <div style="position:absolute;left:26px;bottom:9px"><span class="tag" style="border:2px solid ${d.color};color:${d.color};font-size:13px;padding:4px 9px 3px">${d.name}</span></div></div>`).join('')}</div>
       ${stats([['Labyrinths', '6'], ['Pieces each', '15'], ['Layouts', 'Endless']])}` }),
 
   'card-cutaway': () => card({

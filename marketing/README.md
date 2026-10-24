@@ -15,7 +15,8 @@ Listing copy and artwork for CurseForge and Modrinth.
 | `source/fonts/` | Cinzel and Alegreya Sans, both under the SIL Open Font License (licence files included). |
 
 The look: torch-lit stone, amber gold for titles, a dashed treasure-map line ending in a red X, and one colour per
-dungeon tier (Villa green, Spire violet, Keep ember, Crypt soul cyan) used for frames, tags and the divider.
+dungeon tier (Villa green, Spire violet, Keep ember, Crypt soul cyan) used for frames, tags and the divider; each
+labyrinth has its own colour on the labyrinth card.
 
 ## Regenerating the images
 
@@ -27,7 +28,7 @@ NODE_PATH="$(npm root -g)" node marketing/source/render.cjs card-trail  # one as
 ```
 
 The release name and the supported Minecraft versions and loaders are at the top of `render.cjs`, with the four
-dungeons' names, tiers and colours. Supporting a new Minecraft version means adding one line there, plus one row to the
+dungeons' and six labyrinths' names, tiers and colours. Supporting a new Minecraft version means adding one line there, plus one row to the
 download table in `description.md`. After changing the icon, copy `images/icon.png` to every workspace's
 `common/src/main/resources/logo.png`.
 
@@ -46,8 +47,9 @@ python3 tools/qa/rcon.py "op Builder"
 python3 tools/qa/marketing_shots.py              # or a few: villa spire_inside vault
 ```
 
-Every dungeon in the pictures is the naturally generated one `/locate` finds from spawn; camera angles per dungeon
-are at the top of the script. Every screenshot is a single unedited frame.
+Every dungeon and labyrinth in the pictures is the naturally generated one `/locate` finds from spawn; camera angles
+per dungeon are at the top of the script. Every screenshot is a single unedited frame. For `cutaway.jpg` only, the
+script first removes the ground above the labyrinth with `/fill` (the card says so).
 
 | Screenshot | Scene |
 |------------|-------|
@@ -57,3 +59,5 @@ are at the top of the script. Every screenshot is a single unedited frame.
 | `vault.jpg` | A vault opened in survival, with its loot |
 | `map.jpg` | A treasure map from the Villa's vault, in hand |
 | `advancements.jpg` | The Much More Dungeons advancement tab |
+| `catacombs.jpg`, `tomb.jpg`, `warrens.jpg`, `frost.jpg`, `abyss.jpg`, `bastille.jpg` | Each labyrinth's vault chamber with its guardian |
+| `cutaway.jpg` | The Sunscorched Tomb from above, with the ground over it removed |

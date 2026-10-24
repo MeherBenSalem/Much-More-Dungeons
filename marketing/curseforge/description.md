@@ -1,25 +1,30 @@
 ![Much More Dungeons](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/banner.png)
 
-**Four handcrafted dungeons, and a reason to go from one to the next.** Each dungeon has its own biomes, its own
-loot tier, themed spawners and a named guardian at the end. Its vault holds a treasure map to the next dungeon:
-from a smugglers' villa in the plains to an arcane spire in the forest, a cursed keep in the desert and, last, a
-soulfire crypt in the snow.
+**Four handcrafted dungeons, six procedural labyrinths, and a reason to go from one to the next.** Each has its own
+biomes, its own loot tier, themed spawners and a named guardian at the end. The labyrinths are assembled piece by
+piece under the ground, so no two are laid out alike. Vaults hold a treasure map to a dungeon of the next tier: from
+a smugglers' villa in the plains to an arcane spire in the forest, a cursed keep in the desert and, last, a soulfire
+crypt in the snow, with catacombs, tombs and frozen vaults beneath them.
 
 Fabric and NeoForge (Forge on 1.20.1) · Minecraft 1.20.1, 1.21.1, 26.1.2, 26.2 and 26.3 · install on the server and
 clients
 
 ![What's new in 2.0](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/header-whats-new.png)
 
-Version 2.0 rebuilds the mod around the four dungeons it already had. Here's what changed from 1.x:
+Version 2.0 rebuilds the mod around the four dungeons it already had and adds a new family of labyrinths. Here's what
+changed from 1.x:
 
+- **Six procedural labyrinths**: underground mazes of corridors, stairs, spawner rooms, storerooms, libraries,
+  shrines and a guarded vault, assembled differently every time; five under the Overworld and one in the Nether
 - **Every chest has real loot**: each dungeon has its own loot table and a guarded **vault**, in four tiers from
   early game to late game (1.x towers all had the same fixed chest contents, and most dungeons used vanilla tables)
-- **A guardian in every dungeon**: the Smuggler Chief, the Spire Illusionist, the Keep Warlord and the Cinder Warden
-- **The dungeon trail**: treasure maps lead from each dungeon to the next
-- **10 advancements** in their own tab, with experience for every guardian
+- **A guardian in every dungeon and labyrinth**: ten in all, from the Smuggler Chief to the Brute Overseer
+- **The dungeon trail**: treasure maps lead from each tier to the next
+- **23 advancements** in their own tab, with experience for every guardian
 - **Better placement**: dungeons are centred, never in water or below sea level, never on steep slopes, and kept
   away from villages
-- **More often**: the nearest dungeon is usually within a few hundred to about 1,500 blocks instead of thousands
+- **More often**: the nearest handcrafted dungeon is usually within a few hundred to about 1,500 blocks instead of
+  thousands
 - Biome tags that **modded biomes** join, a **config file**, and `/muchmoredungeons inspect` for server admins
 - Empty spawners fixed, the Villa's walls of empty chests are now barrels, and the Soulfire Crypt has a new exterior
 - Now for **Minecraft 26.3** too, and 1.20.1 works exactly like every other version
@@ -44,24 +49,49 @@ Version 2.0 rebuilds the mod around the four dungeons it already had. Here's wha
 
 ![Soulfire Crypt](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/card-crypt.png)
 
+![The labyrinths](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/header-labyrinths.png)
+
+![Never the same maze](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/card-labyrinths.png)
+
+Labyrinths are built by Minecraft's jigsaw system from fifteen pieces per theme: an entrance shaft (a hub for the
+deep and Nether ones), corridors, corners, junctions, crossings, stairs that lead further down, two kinds of spawner
+room, storerooms, libraries, pillared halls, shrines, dead ends and loot alcoves. The vault chamber, with two vault
+chests, two spawners and the guardian, is always there. Each theme has its own blocks, mobs and loot.
+
+| Labyrinth | Tier | Where | Spawners | Guardian |
+|-----------|------|-------|----------|----------|
+| Forgotten Catacombs | 2 | under plains, meadows and forests | skeleton, zombie | Bone Warden |
+| Sunscorched Tomb | 2 | under deserts and badlands | husk, skeleton | Tomb King |
+| Verdant Warrens | 2 | under jungles, swamps and lush caves | spider, cave spider, zombie | Broodmother |
+| Rimefrost Vaults | 3 | under snowy biomes | stray, skeleton | Frost Lich |
+| Abyssal Halls | 4 | deep under any Overworld biome (around y -28) | zombie, skeleton, cave spider | Abyssal Knight |
+| Infernal Bastille | 4 | in the Nether (around y 40) | blaze, wither skeleton, magma cube | Brute Overseer |
+
+![Every map is new](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/card-cutaway.png)
+
+Find one with `/locate structure #muchmoredungeons:labyrinths`. The entrance is a small stone shaft with a ladder
+and a trapdoor.
+
 ![The dungeon trail](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/header-trail.png)
 
 ![Follow the map](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/card-trail.png)
 
-Every vault holds a treasure map to the next dungeon on the trail, and a regular chest sometimes has one too:
+Every Overworld vault below tier 4 holds a treasure map to a dungeon or labyrinth of the next tier, and a regular
+chest sometimes has one too:
 
-**Smuggler's Villa → Arcane Spire → Cursed Keep → Soulfire Crypt**
+**Tier I (Villa) → Tier II (Spire, Catacombs, Tomb, Warrens) → Tier III (Keep, Rimefrost Vaults) → Tier IV (Crypt,
+Abyssal Halls)**
 
-The map marks the dungeon with a red X and leads to one in land nobody has explored yet. You can also find
-any dungeon with `/locate structure muchmoredungeons:<id>`, or the nearest of the four with
+The map marks its target with a red X and leads to one in land nobody has explored yet. You can also find any of
+them with `/locate structure muchmoredungeons:<id>`, or the nearest with
 `/locate structure #muchmoredungeons:dungeons`.
 
 ![Guardians](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/header-guardians.png)
 
 ![Something to fight](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/card-guardians.png)
 
-Each dungeon spawns its guardian once, when it generates. Guardians are vanilla mobs with a name, more health, armour
-and damage, and better gear. They never despawn, and the weapon they hold always drops.
+Each dungeon and labyrinth spawns its guardian once, when it generates. Guardians are vanilla mobs with a name, more
+health, armour and damage, and better gear. They never despawn, and the weapon they hold always drops.
 
 | Guardian | Dungeon | Mob | Health | Drops |
 |----------|---------|-----|--------|-------|
@@ -69,13 +99,20 @@ and damage, and better gear. They never despawn, and the weapon they hold always
 | Spire Illusionist | Arcane Spire | illusioner | 70 | bow |
 | Keep Warlord | Cursed Keep | zombie | 100 | diamond sword |
 | Cinder Warden | Soulfire Crypt | wither skeleton | 140 | diamond axe |
+| Bone Warden | Forgotten Catacombs | skeleton | 80 | bow |
+| Tomb King | Sunscorched Tomb | husk | 90 | golden sword |
+| Broodmother | Verdant Warrens | spider | 80 | (no weapon) |
+| Frost Lich | Rimefrost Vaults | stray | 110 | bow |
+| Abyssal Knight | Abyssal Halls | wither skeleton | 150 | netherite sword |
+| Brute Overseer | Infernal Bastille | piglin brute | 150 | golden axe |
 
 ![Loot](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/header-loot.png)
 
 ![Four tiers of treasure](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/card-loot.png)
 
 Every chest rolls from its dungeon's table when it is first opened; the vault (the guarded chest) rolls from a
-richer one. Enchanted gear and books scale with the tier:
+richer one. Labyrinths use the lists of their tier plus their own theme items (bones and candles in the catacombs,
+gold in the tomb, echo shards in the Abyssal Halls...). Enchanted gear and books scale with the tier:
 
 | Tier | Supplies | Valuables | Vault highlights | Enchantment levels |
 |------|----------|-----------|------------------|--------------------|
@@ -88,20 +125,22 @@ richer one. Enchanted gear and books scale with the tier:
 
 ![A tab of its own](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/card-advancements.png)
 
-Find each dungeon, defeat each guardian (50 to 250 experience), and enter all four for **Dungeon Delver** (300
-experience).
+Find each dungeon and labyrinth, defeat each guardian (50 to 250 experience), enter all four dungeons for **Dungeon
+Delver** (300 experience) and all six labyrinths for **Into Every Maze** (500 experience).
 
 ![For servers and modpacks](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/header-config.png)
 
 ![Your world, your rules](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/card-worldgen.png)
 
-- **`config/muchmoredungeons.json`**: turn a dungeon off, set the share of valid spots that get one (`chance`, 0 to
-  1), or turn guardians off. Applies to newly generated chunks after a restart.
+- **`config/muchmoredungeons.json`**: turn one of the four handcrafted dungeons off, set the share of valid spots that
+  get one (`chance`, 0 to 1), or turn their guardians off. Applies to newly generated chunks after a restart.
+  Labyrinths are standard jigsaw structures: change or remove them with a datapack.
 - **Datapacks**: spacing and separation (`worldgen/structure_set`), biomes (`tags/worldgen/biome/has_structure`), loot
-  tables, advancements and the structure templates are ordinary data files under the `muchmoredungeons` namespace.
+  tables, advancements, the structure templates and the labyrinths' template pools are ordinary data files under the
+  `muchmoredungeons` namespace: add your own rooms to a labyrinth's pools.
 - **Modded biomes**: biome lists use vanilla biome tags such as `#minecraft:is_forest`, which most biome mods add
   their biomes to, plus optional conventional tags such as `#c:is_snowy`.
-- **Villages**: dungeons keep four chunks away from village placements.
+- **Villages**: dungeons and Overworld labyrinths keep four chunks away from village placements.
 - **`/muchmoredungeons inspect`** (operators): what the dungeon you stand in holds: its chests by loot table, its
   spawners, its guardian and where its vault is.
 - No new blocks, items or entities: dungeons are built from vanilla blocks and stay standing if the mod is removed.
@@ -127,13 +166,17 @@ the 2.0 placement, loot and guardians.
 **Where do I install it?** Wherever worlds are generated: on the server, and on your client for single player. Install
 the same version on clients that join a server running it.
 
-**Can I make dungeons rarer or more common?** Rarer: lower `chance` in the config. Either way: change `spacing` and
-`separation` in `worldgen/structure_set/<dungeon>_set.json` with a datapack.
+**Can I make dungeons rarer or more common?** Rarer: lower `chance` in the config (handcrafted dungeons). Either
+way, for any of the ten: change `spacing` and `separation` in `worldgen/structure_set/<id>_set.json` with a datapack.
 
 **Can I change the loot?** Yes: override `loot_table/chests/<dungeon>.json` and `<dungeon>_vault.json` in a datapack
 (`loot_tables/` on 1.20.1).
 
-**How do I find one?** `/locate structure #muchmoredungeons:dungeons`, or open a vault and follow its map.
+**How do I find one?** `/locate structure #muchmoredungeons:dungeons` (any of the ten) or
+`#muchmoredungeons:labyrinths`, or open a vault and follow its map.
+
+**Do labyrinths flood or break caves?** Their pieces are buried in the ground like ancient cities, so water and
+lava are kept out, and the entrance shaft is closed by a trapdoor.
 
 ![Gallery](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/header-gallery.png)
 
@@ -144,6 +187,12 @@ the same version on clients that join a server running it.
 ![Soulfire Crypt](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/screenshots/crypt.jpg)
 
 ![Smuggler's Villa](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/screenshots/villa.jpg)
+
+![Forgotten Catacombs](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/screenshots/catacombs.jpg)
+
+![Rimefrost Vaults](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/screenshots/frost.jpg)
+
+![Infernal Bastille](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/screenshots/bastille.jpg)
 
 ![Divider](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/divider.png)
 

@@ -30,7 +30,7 @@ OUT = Path(__file__).resolve().parents[2] / 'marketing' / 'images' / 'screenshot
 EXTERIOR = {
     'outdoor_villa': dict(angle=35, dist=1.5, up=0.9, aim=0.3, time=1500),
     'tower_dungeon': dict(angle=210, dist=1.05, up=0.55, aim=0.45, time=1500),
-    'dungeon_t2': dict(angle=140, dist=1.3, up=0.45, aim=0.4, time=1500),
+    'dungeon_t2': dict(angle=140, dist=0.85, up=0.9, aim=0.55, time=1500),
     'soulfire_crypt': dict(angle=0, dist=1.6, up=0.9, aim=0.25, time=1500),
 }
 NAMES = {'outdoor_villa': 'villa', 'tower_dungeon': 'spire', 'dungeon_t2': 'keep', 'soulfire_crypt': 'crypt'}
@@ -59,9 +59,12 @@ class Shots:
 
     def prepare(self):
         self.cmd('gamerule advance_time false', 'gamerule advance_weather false', 'gamerule spawn_mobs false',
-                 'weather clear', 'difficulty normal', f'recipe give {PLAYER} *')
+                 'gamerule immediate_respawn true', 'weather clear', 'difficulty normal', f'recipe give {PLAYER} *',
+                 f'gamemode creative {PLAYER}')
         self.cmd(f'effect give {PLAYER} minecraft:night_vision infinite 0 true')
-        time.sleep(6)  # let the recipe toasts pass
+        # Grant every vanilla advancement so picking up loot shows no toasts.
+        self.cmd(f'advancement grant {PLAYER} everything')
+        time.sleep(30)  # let the recipe and advancement toasts pass
 
     def dungeon(self, dungeon):
         """Locates the dungeon, loads it and returns its piece box and vault position."""
@@ -92,6 +95,20 @@ class Shots:
         self.found[dungeon] = d
         return d
 
+    def free(self, x, y, z, dim='minecraft:overworld'):
+        """True when a player fits at x, y, z (air or cave air at the feet and the head)."""
+        def air(yy):
+            out = self.cmd(f'execute in {dim} if block {int(math.floor(x))} {int(math.floor(yy))} {int(math.floor(z))} #minecraft:replaceable')
+            return 'passed' in out.lower()
+        return air(y) and air(y + 1)
+
+    def stand(self, x, y, z, dim='minecraft:overworld', up=24):
+        """The lowest y from `y` up where a player fits."""
+        for yy in range(int(y), int(y) + up):
+            if self.free(x, yy, z, dim):
+                return yy
+        return y + up
+
     def look(self, eye, target, dim='minecraft:overworld'):
         dx, dy, dz = target[0] - eye[0], target[1] - (eye[1] + 1.62), target[2] - eye[2]
         yaw = math.degrees(math.atan2(-dx, dz))
@@ -119,13 +136,17 @@ class Shots:
         self.cmd(f'gamemode spectator {PLAYER}', 'time set 6000')
         self.s.hud(False)
         # Stand a few blocks from the guardian and look past it towards the vault.
+        g = self.guardian_pos(dungeon)
         self.cmd(f'execute in {d["dim"]} {self.near(d)} as @e[tag={NS}.guardian.{dungeon},limit=1,sort=nearest] '
                  f'run data merge entity @s {{NoAI:1b}}')
-        g = self.guardian_pos(dungeon)
         vx, vy, vz = d['vault'] if d['vault'] else g
-        ex, ez = g[0] + (g[0] - vx) * 1.2 + 0.5, g[2] + (g[2] - vz) * 1.2 + 0.5
-        if abs(ex - g[0]) + abs(ez - g[2]) < 3:
-            ex, ez = g[0] + 4, g[2] + 4
+        # Back away from the vault past the guardian, as far as the room allows.
+        ex, ez = g[0] + 2, g[2] + 2
+        for f in (1.2, 0.9, 0.6, 0.35):
+            cx, cz = g[0] + (g[0] - vx - 0.5) * f, g[2] + (g[2] - vz - 0.5) * f
+            if self.free(cx, g[1] + 1, cz, d['dim']):
+                ex, ez = cx, cz
+                break
         self.look((ex, g[1] + 0.6, ez), (vx + 0.5, vy + 0.5, vz + 0.5), d['dim'])
         self.save(name or NAMES[dungeon] + '_inside', wait=45)
 
@@ -153,25 +174,34 @@ class Shots:
 
     def guardian_pos(self, dungeon):
         d = self.found[dungeon]
-        out = self.cmd(f'execute in {d["dim"]} {self.near(d)} run data get entity '
-                       f'@e[tag={NS}.guardian.{dungeon},limit=1,sort=nearest] Pos')
+        out = ''
+        for _ in range(15):  # entities load a little after their chunks
+            out = self.cmd(f'execute in {d["dim"]} {self.near(d)} run data get entity '
+                           f'@e[tag={NS}.guardian.{dungeon},limit=1,sort=nearest] Pos')
+            if 'entity data' in out:
+                break
+            time.sleep(2)
         nums = [float(v) for v in re.findall(r'(-?\d+\.?\d*)d', out)]
         return tuple(nums[:3])
 
-    def guardian(self, dungeon='soulfire_crypt'):
+    def guardian(self, dungeon='dungeon_t2', name='guardian', hud=True):
         """The guardian, name tag shown, facing the camera."""
         self.dungeon(dungeon)
         self.cmd(f'gamemode spectator {PLAYER}', 'time set 6000')
-        self.s.hud(True)
+        self.s.hud(hud)
         tag = f'{NS}.guardian.{dungeon}'
         d = self.found[dungeon]
         self.cmd(f'execute {self.near(d)} as @e[tag={tag},limit=1,sort=nearest] run data merge entity @s {{NoAI:1b}}')
         g = self.guardian_pos(dungeon)
         eye = (g[0] + 3.2, g[1] + 1.4, g[2] + 2.2)
+        for dx, dz in ((3.2, 2.2), (-3.2, 2.2), (3.2, -2.2), (-3.2, -2.2), (2.5, 0), (-2.5, 0), (0, 2.5), (0, -2.5)):
+            if self.free(g[0] + dx, g[1] + 1, g[2] + dz, d['dim']):
+                eye = (g[0] + dx, g[1] + 1.4, g[2] + dz)
+                break
         self.cmd(f'execute {self.near(d)} run tp @e[tag={tag},limit=1,sort=nearest] {g[0]} {g[1]} {g[2]} '
                  f'facing {eye[0]} {eye[1]} {eye[2]}')
-        self.look(eye, (g[0], g[1] + 1.3, g[2]))
-        self.save('guardian', wait=8)
+        self.look(eye, (g[0], g[1] + 1.3, g[2]), d['dim'])
+        self.save(name, wait=20)
 
     def vault(self, dungeon='dungeon_t2'):
         """The vault chest opened in survival, with its loot."""
@@ -191,7 +221,7 @@ class Shots:
     def treasure_map(self):
         """A treasure map from the villa's vault, held on the way out of the villa."""
         d = self.dungeon('outdoor_villa')
-        self.cmd(f'gamemode survival {PLAYER}', f'clear {PLAYER}', 'time set 1500')
+        self.cmd(f'gamemode creative {PLAYER}', f'clear {PLAYER}', 'time set 1500')
         self.cmd(f'loot give {PLAYER} loot {NS}:chests/outdoor_villa_vault')
         # Keep only the map, and hold it.
         for slot in range(36):
@@ -202,18 +232,21 @@ class Shots:
             self.cmd(f'item replace entity {PLAYER} container.{slot} with minecraft:air')
         self.cmd(f'item replace entity {PLAYER} hotbar.0 from entity {PLAYER} weapon.offhand',
                  f'item replace entity {PLAYER} weapon.offhand with minecraft:air')
-        self.s.hud(False)
+        self.s.hud(True)  # F1 would hide the map in hand too
         cx = (d['x1'] + d['x2']) / 2
-        self.look((cx + 5.5, d['y1'] + 1, d['z2'] + 7.5), (cx, d['y1'] + 3, d['z1']))
-        self.s.tp(cx + 5.5, d['y1'] + 1, d['z2'] + 7.5, yaw=200, pitch=38)
-        self.save('map', wait=6)
+        x, z = cx + 5.5, d['z2'] + 7.5
+        y = self.stand(x, d['y1'], z)
+        self.s.tp(x, y, z, yaw=200, pitch=38)
+        self.save('map', wait=14)  # until the chat has faded
 
     def advancements(self):
-        self.cmd(f'gamemode survival {PLAYER}', f'advancement revoke {PLAYER} everything')
+        self.cmd(f'gamemode creative {PLAYER}', f'advancement revoke {PLAYER} from {NS}:root')
         for k in ('root', 'discover_outdoor_villa', 'slay_outdoor_villa_guardian', 'discover_tower_dungeon',
-                  'slay_tower_dungeon_guardian', 'discover_dungeon_t2'):
+                  'slay_tower_dungeon_guardian', 'discover_dungeon_t2', 'discover_catacombs', 'slay_catacombs_guardian',
+                  'discover_sandstone_tomb', 'discover_overgrown_warrens', 'slay_overgrown_warrens_guardian',
+                  'discover_frost_vaults', 'discover_soulfire_crypt'):
             self.cmd(f'advancement grant {PLAYER} only {NS}:{k}')
-        time.sleep(8)
+        time.sleep(45)  # until the toasts and the chat have gone
         self.s.hud(True)
         self.s.key('l', delay=2)
         self.save('advancements', wait=2)
@@ -239,6 +272,9 @@ def main():
             shots.interior(labyrinths[name], name)
         elif name in by_name:
             shots.exterior(by_name[name])
+        elif name in ('spire_inside', 'crypt_inside'):
+            # Their guardians stand by the walls: frame the guardian in its room instead.
+            shots.guardian(by_name[name[:-7]], name, hud=False)
         elif name.endswith('_inside'):
             shots.interior(by_name[name[:-7]])
         elif name == 'map':
