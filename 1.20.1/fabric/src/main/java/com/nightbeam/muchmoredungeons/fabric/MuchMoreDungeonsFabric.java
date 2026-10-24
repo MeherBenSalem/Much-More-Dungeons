@@ -4,10 +4,12 @@ import com.nightbeam.muchmoredungeons.MuchMoreDungeons;
 import com.nightbeam.muchmoredungeons.command.DungeonsCommand;
 import com.nightbeam.muchmoredungeons.platform.Platform;
 import com.nightbeam.muchmoredungeons.platform.Registrar;
+import com.nightbeam.muchmoredungeons.world.Guardians;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,6 +20,7 @@ public final class MuchMoreDungeonsFabric implements ModInitializer {
     public void onInitialize() {
         MuchMoreDungeons.init(new FabricPlatform(), new FabricRegistrar());
         CommandRegistrationCallback.EVENT.register((dispatcher, context, environment) -> DungeonsCommand.register(dispatcher));
+        ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> Guardians.restoreWeapon(entity));
     }
 
     private static final class FabricRegistrar implements Registrar {

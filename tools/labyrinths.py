@@ -17,6 +17,8 @@ Pieces meet at jigsaw blocks named muchmoredungeons:door in the middle of 3x3 do
 """
 from __future__ import annotations
 
+import gzip
+import io
 import random
 import sys
 from pathlib import Path
@@ -210,6 +212,10 @@ class Piece:
             'ArmorDropChances': [('float', 0.0)] * 4,
             'Tags': [tag, f'{tag}.{theme_id}'],
         }
+        if mainhand:
+            # Jigsaw runs finalizeSpawn on template mobs, which hands them their default weapon (a wither skeleton's
+            # stone sword); the mod gives this one back when the guardian first loads (Guardians.restoreWeapon).
+            nbt['Tags'].append(f'{NS}.mainhand={mainhand}')
         if entity == 'minecraft:piglin_brute':
             nbt['IsImmuneToZombification'] = ('byte', 1)
         self.entities.append(((x + 0.5, float(y), z + 0.5), (x, y, z), nbt))
@@ -449,7 +455,10 @@ def save(piece: Piece, path: Path):
                      'blocks': List[Compound](blocks), 'entities': List[Compound](entities),
                      'DataVersion': Int(DATA_VERSION)})
     path.parent.mkdir(parents=True, exist_ok=True)
-    File(root).save(path, gzipped=True)
+    raw = io.BytesIO()
+    File(root).write(raw)
+    if not path.exists() or gzip.decompress(path.read_bytes()) != raw.getvalue():
+        path.write_bytes(gzip.compress(raw.getvalue(), mtime=0))  # unchanged pieces are left alone
 
 
 def main():

@@ -3,6 +3,7 @@ package com.nightbeam.muchmoredungeons.forge;
 import com.nightbeam.muchmoredungeons.MuchMoreDungeons;
 import com.nightbeam.muchmoredungeons.command.DungeonsCommand;
 import com.nightbeam.muchmoredungeons.platform.Registrar;
+import com.nightbeam.muchmoredungeons.world.Guardians;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -10,6 +11,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -31,6 +33,11 @@ public final class MuchMoreDungeonsForge {
         });
         registers.values().forEach(deferred -> deferred.register(modBus));
         MinecraftForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> DungeonsCommand.register(event.getDispatcher()));
+        MinecraftForge.EVENT_BUS.addListener((EntityJoinLevelEvent event) -> {
+            if (!event.getLevel().isClientSide()) {
+                Guardians.restoreWeapon(event.getEntity());
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")

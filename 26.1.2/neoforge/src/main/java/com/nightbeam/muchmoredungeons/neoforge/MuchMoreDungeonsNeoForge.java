@@ -3,6 +3,7 @@ package com.nightbeam.muchmoredungeons.neoforge;
 import com.nightbeam.muchmoredungeons.MuchMoreDungeons;
 import com.nightbeam.muchmoredungeons.command.DungeonsCommand;
 import com.nightbeam.muchmoredungeons.platform.Registrar;
+import com.nightbeam.muchmoredungeons.world.Guardians;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 @Mod(MuchMoreDungeons.MOD_ID)
@@ -29,6 +31,11 @@ public final class MuchMoreDungeonsNeoForge {
         });
         registers.values().forEach(deferred -> deferred.register(modBus));
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> DungeonsCommand.register(event.getDispatcher()));
+        NeoForge.EVENT_BUS.addListener((EntityJoinLevelEvent event) -> {
+            if (!event.getLevel().isClientSide()) {
+                Guardians.restoreWeapon(event.getEntity());
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")

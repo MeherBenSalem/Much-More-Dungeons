@@ -3,6 +3,7 @@ package com.nightbeam.muchmoredungeons.world;
 import com.nightbeam.muchmoredungeons.MuchMoreDungeons;
 import com.nightbeam.muchmoredungeons.dungeon.Dungeon;
 import com.nightbeam.muchmoredungeons.dungeon.Guardian;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 /** Spawns a dungeon's guardian: named, persistent, tougher than its kind, and tagged for the advancements. */
 public final class Guardians {
     public static final String TAG = MuchMoreDungeons.MOD_ID + ".guardian";
+    private static final String MAINHAND_TAG = MuchMoreDungeons.MOD_ID + ".mainhand=";
 
     private Guardians() {
     }
@@ -48,6 +50,23 @@ public final class Guardians {
         equip(mob, EquipmentSlot.HEAD, spec.head(), 0.0F);
         equip(mob, EquipmentSlot.CHEST, spec.chest(), 0.0F);
         level.addFreshEntityWithPassengers(mob);
+    }
+
+    /**
+     * Gives a labyrinth guardian back the weapon its template gave it. Jigsaw pieces run finalizeSpawn on the mobs in
+     * their templates, which replaces the weapon with the mob's default one; the template records the real one in a
+     * {@code muchmoredungeons.mainhand=<item>} tag, read (and removed) when the guardian first joins the world.
+     */
+    public static void restoreWeapon(Entity entity) {
+        if (!(entity instanceof Mob mob)) {
+            return;
+        }
+        for (String tag : List.copyOf(mob.entityTags())) {
+            if (tag.startsWith(MAINHAND_TAG)) {
+                mob.removeTag(tag);
+                equip(mob, EquipmentSlot.MAINHAND, tag.substring(MAINHAND_TAG.length()), 2.0F);
+            }
+        }
     }
 
     private static void base(Mob mob, Holder<Attribute> attribute, double value) {
