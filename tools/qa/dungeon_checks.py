@@ -235,7 +235,9 @@ def client_checks(server, located, shots_dir):
         vault = re.search(r'vault=(-?\d+),(-?\d+),(-?\d+)', info.get('raw', ''))
         if vault:
             vx, vy, vz = map(int, vault.groups())
-            server.cmd(f'execute in {dim} run tp {PLAYER} {vx + 0.5} {vy + 1} {vz + 0.5}')
+            # In the vault's own block (creative: no harm): one above can be outside the box, the vault being the
+            # highest chest of some dungeons.
+            server.cmd(f'execute in {dim} run tp {PLAYER} {vx + 0.5} {vy} {vz + 0.5}')
         else:
             server.cmd(f'execute in {dim} run tp {PLAYER} {guardian}')
         adv = ''
@@ -244,7 +246,9 @@ def client_checks(server, located, shots_dir):
             adv = server.cmd(f'execute if entity @a[name={PLAYER},advancements={{{NS}:discover_{dungeon}=true}}]')
             if 'passed' in adv.lower():
                 break
-        check(f'client {dungeon}: discovery advancement', 'passed' in adv.lower(), adv)
+        check(f'client {dungeon}: discovery advancement', 'passed' in adv.lower(),
+              f'{adv} / vault {vault.groups() if vault else None} / box {info["box"]} / '
+              f'{server.cmd(f"data get entity {PLAYER} Pos")}')
         if shots_dir:
             s.hud(False)
             s.shot(Path(shots_dir) / f'{dungeon}.png')
