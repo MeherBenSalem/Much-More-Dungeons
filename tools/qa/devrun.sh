@@ -48,7 +48,7 @@ PROPS
     if [ "$2" = 1.20.1 ] && [ "$3" = forge ]; then
       # A Forge 1.20.1 dev server otherwise tries to advertise itself to the LAN and fails in the sandbox.
       mkdir -p "$dir/defaultconfigs"
-      printf 'advertiseDedicatedServerToLan = false\n' > "$dir/defaultconfigs/forge-server.toml"
+      printf '[server]\n\tadvertiseDedicatedServerToLan = false\n' > "$dir/defaultconfigs/forge-server.toml"
     fi
     ;;
   start-server)
