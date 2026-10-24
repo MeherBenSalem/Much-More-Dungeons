@@ -231,7 +231,13 @@ def client_checks(server, located, shots_dir):
             if 'passed' in server.cmd(f'execute in {dim} if entity {guardian}').lower():
                 break
             time.sleep(3)
-        server.cmd(f'execute in {dim} run tp {PLAYER} {guardian}')
+        # Walk in at the vault (always inside; a guardian may have wandered out), then go to the guardian.
+        vault = re.search(r'vault=(-?\d+),(-?\d+),(-?\d+)', info.get('raw', ''))
+        if vault:
+            vx, vy, vz = map(int, vault.groups())
+            server.cmd(f'execute in {dim} run tp {PLAYER} {vx + 0.5} {vy + 1} {vz + 0.5}')
+        else:
+            server.cmd(f'execute in {dim} run tp {PLAYER} {guardian}')
         adv = ''
         for _ in range(15):
             time.sleep(2)
@@ -244,15 +250,21 @@ def client_checks(server, located, shots_dir):
             s.shot(Path(shots_dir) / f'{dungeon}.png')
             s.hud(True)
         weapon = DUNGEONS[dungeon][2]
+        server.cmd(f'execute in {dim} run tp {PLAYER} {guardian}')
+        time.sleep(1)
         server.cmd(f'clear {PLAYER}')
+        before = server.cmd(f'execute in {dim} run data get entity {guardian}')
         hit = server.cmd(f'execute in {dim} run damage {guardian} 10000 minecraft:player_attack by {PLAYER}')
         time.sleep(2)
+        items = server.cmd(f'execute in {dim} at {PLAYER} run data get entity @e[type=minecraft:item,sort=nearest,limit=1]')
+        where = server.cmd(f'data get entity {PLAYER} Pos')
         if weapon:
             # The player stands on the guardian, so the weapon is on the ground or already picked up.
             ground = server.cmd(f'execute in {dim} at {PLAYER} if entity @e[type=minecraft:item,distance=..10,nbt={{Item:{{id:"{weapon}"}}}}]')
             held = server.cmd(f'clear {PLAYER} {weapon} 0')
             dropped = 'passed' in ground.lower() or re.search(r'Found [1-9]', held) is not None
-            check(f'client {dungeon}: guardian dropped its {weapon}', dropped, f'{ground} / {held}')
+            check(f'client {dungeon}: guardian dropped its {weapon}', dropped,
+                  f'{ground} / {held} / player {where} / guardian before: {before[:1500]} / nearest item: {items[:600]}')
         adv = server.cmd(f'execute if entity @a[name={PLAYER},advancements={{{NS}:slay_{dungeon}_guardian=true}}]')
         check(f'client {dungeon}: guardian advancement', 'passed' in adv.lower(), f'{hit} / {adv}')
         server.unload_all()
