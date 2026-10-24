@@ -45,3 +45,4 @@ graphify-out/
 
 # Written by the unit tests
 */common/logs/
+__pycache__/
