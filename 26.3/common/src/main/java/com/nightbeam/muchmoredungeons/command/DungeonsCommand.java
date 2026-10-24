@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.nightbeam.muchmoredungeons.MuchMoreDungeons;
-import com.nightbeam.muchmoredungeons.dungeon.Dungeon;
 import com.nightbeam.muchmoredungeons.world.Guardians;
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -29,9 +29,10 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.phys.AABB;
 
 /**
- * {@code /muchmoredungeons inspect [pos] [fill]} (operators): what the dungeon at a position holds. Lists its loot
- * chests by table, its spawners by mob and its living guardians; {@code fill} rolls the chests' loot first and counts
- * the stacks and treasure maps. Without a position, the executor's column is searched. Meant for modpack makers checking their datapack changes, and for the QA scripts.
+ * {@code /muchmoredungeons inspect [pos] [fill]} and {@code inspect area <from> <to> [fill]} (operators): what a
+ * dungeon holds. Lists its loot chests by table, its spawners by mob, its living guardians and where its vault is;
+ * {@code fill} rolls the chests' loot first and counts the stacks and treasure maps. Without a position, the
+ * executor's column is searched. Meant for modpack makers checking their datapack changes, and for the QA scripts.
  */
 public final class DungeonsCommand {
     private DungeonsCommand() {
@@ -56,17 +57,23 @@ public final class DungeonsCommand {
     private static int inspect(CommandContext<CommandSourceStack> context, BlockPos pos, boolean fill) {
         CommandSourceStack source = context.getSource();
         ServerLevel level = source.getLevel();
-        for (Dungeon dungeon : Dungeon.values()) {
-            Structure structure = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getValue(MuchMoreDungeons.id(dungeon.id()));
-            if (structure == null) {
+        // Every structure of the mod at this spot (a labyrinth can lie under a dungeon): the four dungeons, the
+        // labyrinths, and any a datapack adds to the namespace. One line each.
+        int found = 0;
+        for (Map.Entry<ResourceKey<Structure>, Structure> entry : level.registryAccess().lookupOrThrow(Registries.STRUCTURE).entrySet()) {
+            if (!entry.getKey().identifier().getNamespace().equals(MuchMoreDungeons.MOD_ID)) {
                 continue;
             }
-            StructureStart start = startAt(level, pos, structure);
+            StructureStart start = startAt(level, pos, entry.getValue());
             if (start == null) {
                 continue;
             }
-            report(source, dungeon.id(), start.getBoundingBox(), Guardians.TAG + "." + dungeon.id(), fill);
-            return 1;
+            String id = entry.getKey().identifier().getPath();
+            report(source, id, start.getBoundingBox(), Guardians.TAG + "." + id, fill);
+            found++;
+        }
+        if (found > 0) {
+            return found;
         }
         source.sendFailure(Component.literal("MMD inspect none: no Much More Dungeons dungeon at " + pos.toShortString()));
         return 0;
@@ -85,6 +92,7 @@ public final class DungeonsCommand {
         Map<String, Integer> spawners = new TreeMap<>();
         int stacks = 0;
         int maps = 0;
+        BlockPos vault = null;
         for (int cx = box.minX() >> 4; cx <= box.maxX() >> 4; cx++) {
             for (int cz = box.minZ() >> 4; cz <= box.maxZ() >> 4; cz++) {
                 if (!level.hasChunk(cx, cz)) {
@@ -107,9 +115,15 @@ public final class DungeonsCommand {
                         if (!"none".equals(table)) {
                             chests.merge(table, 1, Integer::sum);
                         }
+                        if (table.endsWith("_vault")) {
+                            vault = be.getBlockPos();
+                        }
                     } else if (be instanceof SpawnerBlockEntity spawner) {
                         Entity shown = spawner.getSpawner().getOrCreateDisplayEntity(level, be.getBlockPos());
                         String mob = shown == null ? "none" : BuiltInRegistries.ENTITY_TYPE.getKey(shown.getType()).toString();
+                        if (shown != null && shown.hasCustomName()) {
+                            mob += "[" + shown.getCustomName().getString().replace(' ', '_') + "]";
+                        }
                         spawners.merge(mob, 1, Integer::sum);
                     }
                 }
@@ -117,17 +131,27 @@ public final class DungeonsCommand {
         }
         int guardians = level.getEntitiesOfClass(Mob.class, AABB.of(box).inflate(8),
                 mob -> mob.entityTags().contains(guardianTag)).size();
-        String line = String.format("MMD inspect id=%s box=%d,%d,%d,%d,%d,%d chests=%s spawners=%s guardians=%d%s",
+        String line = String.format("MMD inspect id=%s box=%d,%d,%d,%d,%d,%d chests=%s spawners=%s guardians=%d%s%s",
                 label, box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ(),
-                join(chests), join(spawners), guardians, fill ? " stacks=" + stacks + " maps=" + maps : "");
+                join(chests), join(spawners), guardians, fill ? " stacks=" + stacks + " maps=" + maps : "",
+                vault == null ? "" : " vault=" + vault.getX() + "," + vault.getY() + "," + vault.getZ());
         source.sendSuccess(() -> Component.literal(line), false);
     }
 
-    /** The dungeon with a piece at {@code pos}, or anywhere in its column (so a /locate result can be inspected). */
+    /**
+     * The dungeon with a piece at {@code pos}, or anywhere in the columns around it (so a /locate result can be
+     * inspected: a labyrinth's first piece starts at the chunk's corner, the handcrafted dungeons at its middle).
+     */
     private static StructureStart startAt(ServerLevel level, BlockPos pos, Structure structure) {
         StructureStart start = level.structureManager().getStructureWithPieceAt(pos.getX(), pos.getY(), pos.getZ(), structure);
-        for (int y = level.getMinY(); !start.isValid() && y < level.getMaxY(); y += 4) {
-            start = level.structureManager().getStructureWithPieceAt(pos.getX(), y, pos.getZ(), structure);
+        for (int dx = -8; dx <= 8 && !start.isValid(); dx += 4) {
+            for (int dz = -8; dz <= 8 && !start.isValid(); dz += 4) {
+                int x = pos.getX() + dx;
+                int z = pos.getZ() + dz;
+                for (int y = level.getMinY(); !start.isValid() && y < level.getMaxY(); y += 4) {
+                    start = level.structureManager().getStructureWithPieceAt(x, y, z, structure);
+                }
+            }
         }
         return start.isValid() ? start : null;
     }

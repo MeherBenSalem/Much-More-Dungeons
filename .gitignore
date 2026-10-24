@@ -1,6 +1,5 @@
-# Build outputs
+# Build outputs (release jars in releases/ are committed for the publish workflow)
 dist/
-releases/
 **/build/
 **/.gradle/
 
@@ -28,6 +27,9 @@ run/
 .env
 .env.*
 !.env.example
+
+# Marketing render scratch files
+marketing/source/.render-*.html
 
 # OS / logs / temp
 .DS_Store

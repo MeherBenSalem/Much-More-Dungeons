@@ -1,0 +1,1 @@
+Four handcrafted dungeons with loot tiers, themed spawners, a named guardian in each, advancements, and treasure maps that lead from one dungeon to the next. Fabric, NeoForge and Forge, 1.20.1 to 26.3.

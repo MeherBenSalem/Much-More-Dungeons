@@ -1,8 +1,9 @@
-﻿# build-all.ps1
-# Builds Much More Dungeons for all versions and collects JARs into dist/
+# build-all.ps1
+# Builds Much More Dungeons for all versions and collects the release JARs into releases/
+# (each workspace needs its Java: 17 for 1.20.1, 21 for 1.21.1, 25 for 26.x; see tools/build_release.sh on Linux)
 
 $root  = $PSScriptRoot
-$dist  = Join-Path $root "dist"
+$dist  = Join-Path $root "releases"
 
 # Per-version loader configuration
 $versionLoaders = [ordered]@{
@@ -10,11 +11,11 @@ $versionLoaders = [ordered]@{
     "1.21.1"  = @("fabric", "neoforge")
     "26.1.2"  = @("fabric", "neoforge")
     "26.2"    = @("fabric", "neoforge")
+    "26.3"    = @("fabric", "neoforge")
 }
 
-# Recreate dist folder
-if (Test-Path $dist) { Remove-Item $dist -Recurse -Force }
-New-Item -ItemType Directory -Path $dist | Out-Null
+# Older releases stay in releases/; jars of this version are replaced
+if (-not (Test-Path $dist)) { New-Item -ItemType Directory -Path $dist | Out-Null }
 Write-Host "Output folder: $dist`n"
 
 $success = @()

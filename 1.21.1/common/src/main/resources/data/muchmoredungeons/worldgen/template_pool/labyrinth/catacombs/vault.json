@@ -1,0 +1,14 @@
+{
+  "fallback": "muchmoredungeons:labyrinth/catacombs/ends",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "muchmoredungeons:labyrinth/catacombs/vault",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

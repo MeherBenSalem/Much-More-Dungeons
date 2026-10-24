@@ -247,22 +247,33 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:map",
+          "name": "minecraft:filled_map",
           "weight": 1,
           "modifier": [
             {
               "type": "minecraft:exploration_map",
-              "destination": "#muchmoredungeons:on_soulfire_crypt_maps",
+              "destination": "#muchmoredungeons:on_tier4_maps",
               "decoration": "minecraft:red_x",
               "zoom": 2,
               "search_radius": 12,
               "skip_existing_chunks": true
             },
             {
+              "type": "minecraft:filtered",
+              "item_filter": {
+                "predicates": {
+                  "minecraft:map_id": {}
+                }
+              },
+              "on_fail": {
+                "type": "minecraft:discard"
+              }
+            },
+            {
               "type": "minecraft:set_name",
               "name": {
-                "translate": "item.muchmoredungeons.map.soulfire_crypt",
-                "fallback": "Soulfire Crypt Map"
+                "translate": "item.muchmoredungeons.map.tier4",
+                "fallback": "Dungeon Map: Tier IV"
               },
               "target": "item_name"
             }

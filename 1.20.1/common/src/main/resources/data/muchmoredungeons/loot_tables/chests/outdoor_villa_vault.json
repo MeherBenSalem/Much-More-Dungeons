@@ -319,7 +319,7 @@
           "functions": [
             {
               "function": "minecraft:exploration_map",
-              "destination": "muchmoredungeons:on_tower_dungeon_maps",
+              "destination": "muchmoredungeons:on_tier2_maps",
               "decoration": "red_x",
               "zoom": 2,
               "search_radius": 12,
@@ -328,8 +328,8 @@
             {
               "function": "minecraft:set_name",
               "name": {
-                "translate": "item.muchmoredungeons.map.tower_dungeon",
-                "fallback": "Arcane Spire Map"
+                "translate": "item.muchmoredungeons.map.tier2",
+                "fallback": "Dungeon Map: Tier II"
               }
             }
           ]

@@ -1,0 +1,140 @@
+{
+  "parent": "muchmoredungeons:root",
+  "display": {
+    "icon": {
+      "item": "minecraft:recovery_compass"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.all_labyrinths.title",
+      "fallback": "Into Every Maze"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.all_labyrinths.description",
+      "fallback": "Enter all six labyrinths"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "catacombs": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "muchmoredungeons:catacombs"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "sandstone_tomb": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "muchmoredungeons:sandstone_tomb"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "overgrown_warrens": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "muchmoredungeons:overgrown_warrens"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "frost_vaults": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "muchmoredungeons:frost_vaults"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "deepslate_halls": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "muchmoredungeons:deepslate_halls"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "nether_bastille": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "muchmoredungeons:nether_bastille"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "catacombs"
+    ],
+    [
+      "sandstone_tomb"
+    ],
+    [
+      "overgrown_warrens"
+    ],
+    [
+      "frost_vaults"
+    ],
+    [
+      "deepslate_halls"
+    ],
+    [
+      "nether_bastille"
+    ]
+  ],
+  "rewards": {
+    "experience": 500
+  }
+}

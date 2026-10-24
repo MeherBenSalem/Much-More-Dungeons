@@ -284,7 +284,7 @@
           "functions": [
             {
               "function": "minecraft:exploration_map",
-              "destination": "muchmoredungeons:on_soulfire_crypt_maps",
+              "destination": "muchmoredungeons:on_tier4_maps",
               "decoration": "red_x",
               "zoom": 2,
               "search_radius": 12,
@@ -293,8 +293,8 @@
             {
               "function": "minecraft:set_name",
               "name": {
-                "translate": "item.muchmoredungeons.map.soulfire_crypt",
-                "fallback": "Soulfire Crypt Map"
+                "translate": "item.muchmoredungeons.map.tier4",
+                "fallback": "Dungeon Map: Tier IV"
               }
             }
           ]

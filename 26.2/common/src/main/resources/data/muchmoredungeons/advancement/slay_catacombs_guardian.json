@@ -1,0 +1,43 @@
+{
+  "parent": "muchmoredungeons:discover_catacombs",
+  "display": {
+    "icon": {
+      "id": "minecraft:skeleton_skull"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.slay_catacombs_guardian.title",
+      "fallback": "Bone Dry"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.slay_catacombs_guardian.description",
+      "fallback": "Defeat the Bone Warden"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "killed": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:nbt": "{Tags:[\"muchmoredungeons.guardian.catacombs\"]}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "killed"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  }
+}

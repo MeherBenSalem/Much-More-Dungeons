@@ -1,0 +1,42 @@
+{
+  "parent": "muchmoredungeons:root",
+  "display": {
+    "icon": {
+      "item": "minecraft:moss_block"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.discover_overgrown_warrens.title",
+      "fallback": "Into the Green"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.discover_overgrown_warrens.description",
+      "fallback": "Enter the Verdant Warrens"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "entered": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "muchmoredungeons:overgrown_warrens"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "entered"
+    ]
+  ]
+}

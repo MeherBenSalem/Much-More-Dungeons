@@ -1,0 +1,14 @@
+{
+  "fallback": "muchmoredungeons:labyrinth/deepslate_halls/ends",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "muchmoredungeons:labyrinth/deepslate_halls/vault",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

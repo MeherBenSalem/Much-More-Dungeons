@@ -1,0 +1,43 @@
+{
+  "parent": "muchmoredungeons:discover_overgrown_warrens",
+  "display": {
+    "icon": {
+      "item": "minecraft:spider_eye"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.slay_overgrown_warrens_guardian.title",
+      "fallback": "Exterminator"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.slay_overgrown_warrens_guardian.description",
+      "fallback": "Defeat the Broodmother"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "killed": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "nbt": "{Tags:[\"muchmoredungeons.guardian.overgrown_warrens\"]}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "killed"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  }
+}

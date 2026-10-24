@@ -1,0 +1,14 @@
+{
+  "fallback": "muchmoredungeons:labyrinth/sandstone_tomb/ends",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "muchmoredungeons:labyrinth/sandstone_tomb/vault",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

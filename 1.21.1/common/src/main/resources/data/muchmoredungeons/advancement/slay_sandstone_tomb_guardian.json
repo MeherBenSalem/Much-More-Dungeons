@@ -1,0 +1,43 @@
+{
+  "parent": "muchmoredungeons:discover_sandstone_tomb",
+  "display": {
+    "icon": {
+      "id": "minecraft:golden_sword"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.slay_sandstone_tomb_guardian.title",
+      "fallback": "Dethroned"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.slay_sandstone_tomb_guardian.description",
+      "fallback": "Defeat the Tomb King"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "killed": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "nbt": "{Tags:[\"muchmoredungeons.guardian.sandstone_tomb\"]}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "killed"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  }
+}

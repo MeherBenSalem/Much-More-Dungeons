@@ -11,13 +11,18 @@ Format differences handled here (checked against each version's vanilla data):
   26.x     asset-id advancement backgrounds
   26.2+    namespaced entity sub-predicates ("minecraft:location")
   26.3     loot "modifier" (with "type") instead of "functions" (with "function"), "condition" instead of
-           "conditions", map destination as a '#tag'
+           "conditions", map destination as a '#tag', spawn override "count" instead of minCount/maxCount,
+           exploration maps fill the item they are given (filled_map, dropped when nothing is found)
 """
 from __future__ import annotations
 
 import json
 import shutil
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from labyrinths import ENDS, HALLS, THEMES  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[1]
 NS = 'muchmoredungeons'
@@ -36,8 +41,21 @@ GUARDIANS = {
     'dungeon_t2': 'Keep Warlord',
     'soulfire_crypt': 'Cinder Warden',
 }
-# Each dungeon's treasure map leads to the next one: the trail goes villa -> tower -> keep -> crypt.
-NEXT = {'outdoor_villa': 'tower_dungeon', 'tower_dungeon': 'dungeon_t2', 'dungeon_t2': 'soulfire_crypt'}
+# Loot tiers. Each dungeon's treasure maps lead to a dungeon of the next tier (in the Overworld).
+TIER = {'outdoor_villa': 1, 'tower_dungeon': 2, 'dungeon_t2': 3, 'soulfire_crypt': 4}
+TIER.update({k: t['tier'] for k, t in THEMES.items()})
+TIER_BASE = {1: 'outdoor_villa', 2: 'tower_dungeon', 3: 'dungeon_t2', 4: 'soulfire_crypt'}
+ROMAN = {1: 'I', 2: 'II', 3: 'III', 4: 'IV'}
+OVERWORLD = [k for k in TIER if THEMES.get(k, {}).get('dimension') != 'nether']
+LABYRINTHS = list(THEMES)
+ALL = DUNGEONS + LABYRINTHS
+TITLES.update({k: t['name'] for k, t in THEMES.items()})
+GUARDIANS.update({k: t['guardian'][1] for k, t in THEMES.items()})
+# Labyrinth placement: spacing, separation, salt.
+LABYRINTH_SETS = {
+    'catacombs': (22, 8, 31001), 'sandstone_tomb': (22, 8, 31002), 'overgrown_warrens': (22, 8, 31003),
+    'frost_vaults': (24, 8, 31004), 'deepslate_halls': (20, 7, 31005), 'nether_bastille': (18, 6, 31006),
+}
 
 # Placement: spacing and separation in chunks, salt, and how many chunks to keep clear of villages.
 SETS = {
@@ -211,21 +229,40 @@ class Dialect:
             functions.append(self.enchant(*((extra,) if isinstance(extra, str) else extra)))
         return self.with_functions(out, functions)
 
-    def treasure_map(self, target, weight=1):
-        tag = f'{NS}:on_{target}_maps'
+    def treasure_map(self, tier, weight=1):
+        tag = f'{NS}:on_tier{tier}_maps'
         destination = f'#{tag}' if self.modifier else tag
         decoration = 'red_x' if self.legacy else 'minecraft:red_x'
-        name = {'translate': f'item.{NS}.map.{target}', 'fallback': f'{TITLES[target]} Map'}
+        name = {'translate': f'item.{NS}.map.tier{tier}', 'fallback': f'Dungeon Map: Tier {ROMAN[tier]}'}
         set_name = self.fn('set_name', name=name)
         if not self.legacy:
             set_name['target'] = 'item_name'
         functions = [self.fn('exploration_map', destination=destination, decoration=decoration, zoom=2,
-                             search_radius=12, skip_existing_chunks=True), set_name]
-        return self.with_functions({'type': 'minecraft:item', 'name': 'minecraft:map', 'weight': weight}, functions)
+                             search_radius=12, skip_existing_chunks=True)]
+        item = 'minecraft:map'
+        if self.modifier:
+            # 26.3 writes the map data onto the item it is given instead of turning an empty map into a filled
+            # one; like vanilla, drop the map when no dungeon was found.
+            item = 'minecraft:filled_map'
+            functions.append(self.fn('filtered', item_filter={'predicates': {'minecraft:map_id': {}}},
+                                     on_fail=self.fn('discard')))
+        functions.append(set_name)
+        return self.with_functions({'type': 'minecraft:item', 'name': item, 'weight': weight}, functions)
 
     @staticmethod
     def pool(rolls, entries):
         return {'rolls': Dialect.uniform(*rolls) if isinstance(rolls, tuple) else rolls, 'entries': entries}
+
+    def spawn_overrides(self, overrides):
+        """26.3 replaced minCount/maxCount with an int provider under "count"."""
+        if not self.modifier:
+            return overrides
+        out = json.loads(json.dumps(overrides))
+        for category in out.values():
+            for spawn in category['spawns']:
+                lo, hi = spawn.pop('minCount'), spawn.pop('maxCount')
+                spawn['count'] = lo if lo == hi else {'type': 'minecraft:uniform', 'min_inclusive': lo, 'max_inclusive': hi}
+        return out
 
     # Advancements
     def icon(self, item):
@@ -263,20 +300,36 @@ def text(key, fallback):
 
 
 ICONS = {'outdoor_villa': 'barrel', 'tower_dungeon': 'amethyst_shard', 'dungeon_t2': 'iron_bars',
-         'soulfire_crypt': 'soul_lantern'}
+         'soulfire_crypt': 'soul_lantern', 'catacombs': 'bone', 'sandstone_tomb': 'chiseled_sandstone',
+         'overgrown_warrens': 'moss_block', 'frost_vaults': 'blue_ice', 'deepslate_halls': 'sculk',
+         'nether_bastille': 'nether_bricks'}
 GUARDIAN_ICONS = {'outdoor_villa': 'iron_axe', 'tower_dungeon': 'bow', 'dungeon_t2': 'diamond_sword',
-                  'soulfire_crypt': 'wither_skeleton_skull'}
+                  'soulfire_crypt': 'wither_skeleton_skull', 'catacombs': 'skeleton_skull',
+                  'sandstone_tomb': 'golden_sword', 'overgrown_warrens': 'spider_eye', 'frost_vaults': 'snowball',
+                  'deepslate_halls': 'netherite_sword', 'nether_bastille': 'golden_axe'}
 DISCOVER = {
     'outdoor_villa': ('Contraband', "Find a Smuggler's Villa"),
     'tower_dungeon': ('Spellbound Heights', 'Find an Arcane Spire'),
     'dungeon_t2': ('Cursed Ground', 'Enter a Cursed Keep'),
     'soulfire_crypt': ('Cold Fire', 'Enter a Soulfire Crypt'),
+    'catacombs': ('Rest in Pieces', 'Enter the Forgotten Catacombs'),
+    'sandstone_tomb': ('Sealed Away', 'Enter a Sunscorched Tomb'),
+    'overgrown_warrens': ('Into the Green', 'Enter the Verdant Warrens'),
+    'frost_vaults': ('Cold Storage', 'Enter the Rimefrost Vaults'),
+    'deepslate_halls': ('Bottom of the World', 'Enter the Abyssal Halls'),
+    'nether_bastille': ('Hot Property', 'Enter an Infernal Bastille'),
 }
 SLAY = {
     'outdoor_villa': ('Chief Out', 'Defeat the Smuggler Chief', 50),
     'tower_dungeon': ('Illusions Shattered', 'Defeat the Spire Illusionist', 100),
     'dungeon_t2': ('Warlord Fallen', 'Defeat the Keep Warlord', 150),
     'soulfire_crypt': ('Ashes to Ashes', 'Defeat the Cinder Warden', 250),
+    'catacombs': ('Bone Dry', 'Defeat the Bone Warden', 100),
+    'sandstone_tomb': ('Dethroned', 'Defeat the Tomb King', 100),
+    'overgrown_warrens': ('Exterminator', 'Defeat the Broodmother', 100),
+    'frost_vaults': ('Thaw', 'Defeat the Frost Lich', 150),
+    'deepslate_halls': ('Knight Fall', 'Defeat the Abyssal Knight', 250),
+    'nether_bastille': ('Overseen', 'Defeat the Brute Overseer', 250),
 }
 
 
@@ -297,10 +350,10 @@ def advancements(d: Dialect):
     out['root'] = {
         'display': display('root', 'map', 'Much More Dungeons', 'Find one of the dungeons and follow its treasure map',
                            root=True),
-        'criteria': {k: d.in_structure(k) for k in DUNGEONS},
-        'requirements': [DUNGEONS[:]],
+        'criteria': {k: d.in_structure(k) for k in ALL},
+        'requirements': [ALL[:]],
     }
-    for k in DUNGEONS:
+    for k in ALL:
         title, desc = DISCOVER[k]
         out[f'discover_{k}'] = {
             'parent': f'{NS}:root', 'display': display(f'discover_{k}', ICONS[k], title, desc),
@@ -317,23 +370,75 @@ def advancements(d: Dialect):
         'criteria': {k: d.in_structure(k) for k in DUNGEONS}, 'requirements': [[k] for k in DUNGEONS],
         'rewards': {'experience': 300},
     }
+    out['all_labyrinths'] = {
+        'parent': f'{NS}:root',
+        'display': display('all_labyrinths', 'recovery_compass', 'Into Every Maze', 'Enter all six labyrinths', 'challenge'),
+        'criteria': {k: d.in_structure(k) for k in LABYRINTHS}, 'requirements': [[k] for k in LABYRINTHS],
+        'rewards': {'experience': 500},
+    }
     return out, lang
 
 
+def has_map(k):
+    return TIER[k] < 4 and k in OVERWORLD
+
+
 def loot_tables(d: Dialect):
+    """The four dungeons have their own lists; a labyrinth uses its tier's lists plus its own flavour items."""
     tables = {}
-    for k in DUNGEONS:
-        supplies, valuables = ROLLS[k]
-        pools = [d.pool(supplies, [d.item(x) for x in SUPPLIES[k]]),
-                 d.pool(valuables, [d.item(x) for x in VALUABLES[k]])]
-        if k in NEXT:
-            pools.append(d.pool(1, [d.treasure_map(NEXT[k]), {'type': 'minecraft:empty', 'weight': 3}]))
+    for k in ALL:
+        base = TIER_BASE[TIER[k]]
+        flavour = [e(item, 8, (1, 4)) for item in THEMES[k]['flavour']] if k in THEMES else []
+        supplies, valuables = ROLLS[base]
+        pools = [d.pool(supplies, [d.item(x) for x in SUPPLIES[base] + flavour]),
+                 d.pool(valuables, [d.item(x) for x in VALUABLES[base]])]
+        if has_map(k):
+            pools.append(d.pool(1, [d.treasure_map(TIER[k] + 1), {'type': 'minecraft:empty', 'weight': 3}]))
         tables[f'chests/{k}'] = {'type': 'minecraft:chest', 'pools': pools}
-        vault = [d.pool((3, 5), [d.item(x) for x in VAULT[k]]), d.pool((2, 4), [d.item(x) for x in SUPPLIES[k]])]
-        if k in NEXT:
-            vault.append(d.pool(1, [d.treasure_map(NEXT[k])]))
+        vault = [d.pool((3, 5), [d.item(x) for x in VAULT[base]]), d.pool((2, 4), [d.item(x) for x in SUPPLIES[base] + flavour])]
+        if has_map(k):
+            vault.append(d.pool(1, [d.treasure_map(TIER[k] + 1)]))
         tables[f'chests/{k}_vault'] = {'type': 'minecraft:chest', 'pools': vault}
     return tables
+
+
+def labyrinth_data(d: Dialect, data: Path):
+    """Template pools, jigsaw structures, structure sets and biome tags of the labyrinths."""
+    def element(tid, piece):
+        return {'element_type': 'minecraft:single_pool_element', 'location': f'{NS}:labyrinth/{tid}/{piece}',
+                'projection': 'rigid', 'processors': 'minecraft:empty'}
+
+    def pool(tid, name, pieces, fallback='minecraft:empty'):
+        write(data / 'worldgen/template_pool/labyrinth' / tid / f'{name}.json',
+              {'fallback': fallback, 'elements': [{'weight': w, 'element': element(tid, p)} for p, w in pieces]})
+
+    for tid, t in THEMES.items():
+        ends = f'{NS}:labyrinth/{tid}/ends'
+        pool(tid, 'start', [('start', 1)])
+        pool(tid, 'halls', HALLS, ends)
+        pool(tid, 'ends', ENDS)
+        pool(tid, 'vault', [('vault', 1)], ends)
+        structure = {'type': 'minecraft:jigsaw', 'biomes': f'#{NS}:has_structure/{tid}', 'step': 'underground_structures',
+                     'spawn_overrides': {}, 'terrain_adaptation': 'bury', 'start_pool': f'{NS}:labyrinth/{tid}/start',
+                     'size': 6, 'max_distance_from_center': 80, 'use_expansion_hack': False}
+        if isinstance(t['depth'], tuple):
+            structure['start_height'] = {'absolute': t['depth'][1]}
+        else:
+            structure['start_height'] = {'absolute': t['depth']}
+            structure['project_start_to_heightmap'] = 'WORLD_SURFACE_WG'
+        write(data / 'worldgen/structure' / f'{tid}.json', structure)
+        spacing, separation, salt = LABYRINTH_SETS[tid]
+        placement = {'type': 'minecraft:random_spread', 'spacing': spacing, 'separation': separation, 'salt': salt}
+        if t.get('dimension') != 'nether':
+            placement['exclusion_zone'] = {'other_set': 'minecraft:villages', 'chunk_count': VILLAGE_CLEARANCE}
+        write(data / 'worldgen/structure_set' / f'{tid}_set.json',
+              {'structures': [{'structure': f'{NS}:{tid}', 'weight': 1}], 'placement': placement})
+        values, conventional = t['biomes']
+        entries = list(values)
+        for name in conventional:
+            for tag in CONVENTIONAL['legacy' if d.legacy else 'modern'](name):
+                entries.append({'id': tag, 'required': False})
+        write(data / 'tags/worldgen/biome/has_structure' / f'{tid}.json', {'values': entries})
 
 
 def biome_tag(d: Dialect, k):
@@ -365,7 +470,7 @@ def generate(version):
     for k in DUNGEONS:
         write(data / 'tags/worldgen/biome/has_structure' / f'{k}.json', biome_tag(d, k))
         structure = {'type': f'{NS}:{k}', 'biomes': f'#{NS}:has_structure/{k}', 'step': 'surface_structures',
-                     'terrain_adaptation': 'beard_thin', 'spawn_overrides': SPAWN_OVERRIDES.get(k, {})}
+                     'terrain_adaptation': 'beard_thin', 'spawn_overrides': d.spawn_overrides(SPAWN_OVERRIDES.get(k, {}))}
         write(data / 'worldgen/structure' / f'{k}.json', structure)
         spacing, separation, salt = SETS[k]
         write(data / 'worldgen/structure_set' / f'{k}_set.json', {
@@ -373,11 +478,13 @@ def generate(version):
             'placement': {'type': 'minecraft:random_spread', 'spacing': spacing, 'separation': separation,
                           'salt': salt, 'exclusion_zone': {'other_set': 'minecraft:villages',
                                                            'chunk_count': VILLAGE_CLEARANCE}}})
-    for target in NEXT.values():
-        write(data / 'tags/worldgen/structure' / f'on_{target}_maps.json', {'values': [f'{NS}:{target}']})
-    write(data / 'tags/worldgen/structure/dungeons.json', {'values': [f'{NS}:{k}' for k in DUNGEONS]})
-    for k in DUNGEONS:
-        lang[f'item.{NS}.map.{k}'] = f'{TITLES[k]} Map'
+    labyrinth_data(d, data)
+    for tier in (2, 3, 4):
+        write(data / 'tags/worldgen/structure' / f'on_tier{tier}_maps.json',
+              {'values': [f'{NS}:{k}' for k in OVERWORLD if TIER[k] == tier]})
+        lang[f'item.{NS}.map.tier{tier}'] = f'Dungeon Map: Tier {ROMAN[tier]}'
+    write(data / 'tags/worldgen/structure/dungeons.json', {'values': [f'{NS}:{k}' for k in ALL]})
+    write(data / 'tags/worldgen/structure/labyrinths.json', {'values': [f'{NS}:{k}' for k in LABYRINTHS]})
     write(res / 'assets' / NS / 'lang/en_us.json', dict(sorted(lang.items())))
 
 

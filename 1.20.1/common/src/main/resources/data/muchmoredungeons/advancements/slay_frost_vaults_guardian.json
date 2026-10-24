@@ -1,0 +1,43 @@
+{
+  "parent": "muchmoredungeons:discover_frost_vaults",
+  "display": {
+    "icon": {
+      "item": "minecraft:snowball"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.slay_frost_vaults_guardian.title",
+      "fallback": "Thaw"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.slay_frost_vaults_guardian.description",
+      "fallback": "Defeat the Frost Lich"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "killed": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "nbt": "{Tags:[\"muchmoredungeons.guardian.frost_vaults\"]}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "killed"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

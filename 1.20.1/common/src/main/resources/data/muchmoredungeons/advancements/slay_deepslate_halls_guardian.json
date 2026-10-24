@@ -1,0 +1,43 @@
+{
+  "parent": "muchmoredungeons:discover_deepslate_halls",
+  "display": {
+    "icon": {
+      "item": "minecraft:netherite_sword"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.slay_deepslate_halls_guardian.title",
+      "fallback": "Knight Fall"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.slay_deepslate_halls_guardian.description",
+      "fallback": "Defeat the Abyssal Knight"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "killed": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "nbt": "{Tags:[\"muchmoredungeons.guardian.deepslate_halls\"]}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "killed"
+    ]
+  ],
+  "rewards": {
+    "experience": 250
+  }
+}

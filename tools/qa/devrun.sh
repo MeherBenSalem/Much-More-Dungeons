@@ -42,6 +42,8 @@ view-distance=8
 simulation-distance=6
 difficulty=normal
 gamemode=creative
+white-list=false
+enforce-whitelist=false
 PROPS
     if [ "$2" = 1.20.1 ] && [ "$3" = forge ]; then
       # A Forge 1.20.1 dev server otherwise tries to advertise itself to the LAN and fails in the sandbox.

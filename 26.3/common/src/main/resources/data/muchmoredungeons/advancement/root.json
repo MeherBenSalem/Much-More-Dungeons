@@ -72,6 +72,90 @@
           }
         }
       }
+    },
+    "catacombs": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "muchmoredungeons:catacombs"
+            }
+          }
+        }
+      }
+    },
+    "sandstone_tomb": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "muchmoredungeons:sandstone_tomb"
+            }
+          }
+        }
+      }
+    },
+    "overgrown_warrens": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "muchmoredungeons:overgrown_warrens"
+            }
+          }
+        }
+      }
+    },
+    "frost_vaults": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "muchmoredungeons:frost_vaults"
+            }
+          }
+        }
+      }
+    },
+    "deepslate_halls": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "muchmoredungeons:deepslate_halls"
+            }
+          }
+        }
+      }
+    },
+    "nether_bastille": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "muchmoredungeons:nether_bastille"
+            }
+          }
+        }
+      }
     }
   },
   "requirements": [
@@ -79,7 +163,13 @@
       "outdoor_villa",
       "tower_dungeon",
       "dungeon_t2",
-      "soulfire_crypt"
+      "soulfire_crypt",
+      "catacombs",
+      "sandstone_tomb",
+      "overgrown_warrens",
+      "frost_vaults",
+      "deepslate_halls",
+      "nether_bastille"
     ]
   ]
 }

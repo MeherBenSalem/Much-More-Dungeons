@@ -1,0 +1,40 @@
+{
+  "parent": "muchmoredungeons:root",
+  "display": {
+    "icon": {
+      "id": "minecraft:bone"
+    },
+    "title": {
+      "translate": "advancements.muchmoredungeons.discover_catacombs.title",
+      "fallback": "Rest in Pieces"
+    },
+    "description": {
+      "translate": "advancements.muchmoredungeons.discover_catacombs.description",
+      "fallback": "Enter the Forgotten Catacombs"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "entered": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "muchmoredungeons:catacombs"
+            }
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "entered"
+    ]
+  ]
+}

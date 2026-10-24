@@ -1,0 +1,14 @@
+{
+  "fallback": "muchmoredungeons:labyrinth/frost_vaults/ends",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "muchmoredungeons:labyrinth/frost_vaults/vault",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

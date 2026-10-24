@@ -24,7 +24,7 @@ public final class MuchMoreDungeonsFabric implements ModInitializer {
         @Override
         @SuppressWarnings({"unchecked", "rawtypes"})
         public <R, T extends R> Supplier<T> register(ResourceKey<? extends Registry<R>> registry, String path, Supplier<T> factory) {
-            Registry<R> target = (Registry<R>) BuiltInRegistries.REGISTRY.getOrThrow((ResourceKey) registry);
+            Registry<R> target = (Registry<R>) BuiltInRegistries.REGISTRY.getValue((ResourceKey) registry);
             T value = Registry.register(target, MuchMoreDungeons.id(path), factory.get());
             return () -> value;
         }

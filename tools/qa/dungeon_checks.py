@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """In-game checks for Much More Dungeons against a running dev server (see devrun.sh), optionally with the QA client.
+Covers the four handcrafted dungeons and the six labyrinths (the Infernal Bastille in the Nether).
 
 Server checks, for every dungeon:
   * /locate finds it (and the #muchmoredungeons:dungeons tag finds one);
@@ -17,23 +18,31 @@ The server log is then scanned for errors.
 from __future__ import annotations
 
 import argparse
+import math
 import re
 import sys
 import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from rcon import wait_for  # noqa: E402
+from labyrinths import THEMES  # noqa: E402
 
 NS = 'muchmoredungeons'
 PLAYER = 'Builder'
+OVERWORLD, NETHER = 'minecraft:overworld', 'minecraft:the_nether'
+# id: expected spawner mobs, whether its loot holds a treasure map, the guardian's weapon (always dropped), dimension
 DUNGEONS = {
-    # id: (expected spawner mobs, expects a treasure map in its loot)
-    'outdoor_villa': ({'minecraft:pillager'}, True),
-    'tower_dungeon': ({'minecraft:zombie', 'minecraft:skeleton', 'minecraft:spider', 'minecraft:witch'}, True),
-    'dungeon_t2': ({'minecraft:zombie', 'minecraft:husk', 'minecraft:witch', 'minecraft:skeleton'}, True),
-    'soulfire_crypt': ({'minecraft:wither_skeleton', 'minecraft:blaze'}, False),
+    'outdoor_villa': ({'minecraft:pillager'}, True, 'minecraft:iron_axe', OVERWORLD),
+    'tower_dungeon': ({'minecraft:zombie', 'minecraft:skeleton', 'minecraft:spider', 'minecraft:witch'}, True, 'minecraft:bow', OVERWORLD),
+    'dungeon_t2': ({'minecraft:zombie', 'minecraft:husk', 'minecraft:witch', 'minecraft:skeleton'}, True, 'minecraft:diamond_sword', OVERWORLD),
+    'soulfire_crypt': ({'minecraft:wither_skeleton', 'minecraft:blaze'}, False, 'minecraft:diamond_axe', OVERWORLD),
 }
+for _tid, _t in THEMES.items():
+    _nether = _t.get('dimension') == 'nether'
+    DUNGEONS[_tid] = (set(_t['mobs']), _t['tier'] < 4 and not _nether, _t['guardian'][5], NETHER if _nether else OVERWORLD)
+LABYRINTHS = set(THEMES)
 FAILURES: list[str] = []
 
 
@@ -52,33 +61,46 @@ class Server:
         return self.rcon.command(command)
 
     def locate(self, dungeon, origin=None):
-        prefix = f'execute positioned {origin[0]} 64 {origin[1]} run ' if origin else ''
+        prefix = f'execute in {DUNGEONS[dungeon][3]} positioned {origin[0] if origin else 0} 64 {origin[1] if origin else 0} run '
         out = self.cmd(f'{prefix}locate structure {NS}:{dungeon}')
         m = re.search(r'\[(-?\d+), ~, (-?\d+)\]', out)
         # /locate reports the chunk's corner; dungeons are centred on the chunk's middle.
         return (int(m.group(1)) // 16 * 16 + 8, int(m.group(2)) // 16 * 16 + 8) if m else None
 
-    def load_area(self, x, z, radius=48):
-        self.cmd(f'forceload add {x - radius} {z - radius} {x + radius} {z + radius}')
+    def load_area(self, x, z, radius=48, dim=OVERWORLD):
+        self.cmd(f'execute in {dim} run forceload add {x - radius} {z - radius} {x + radius} {z + radius}')
 
     def unload_all(self):
-        self.cmd('forceload remove all')
+        for dim in (OVERWORLD, NETHER):
+            self.cmd(f'execute in {dim} run forceload remove all')
 
-    def inspect(self, x, z, fill=True, tries=20):
+    def inspect(self, x, z, fill=True, tries=20, dim=OVERWORLD, want=None):
+        """Inspects the dungeon `want` (one inspect line per structure at the spot)."""
         # Chunks load (and generate) asynchronously after forceload; retry until the dungeon shows up.
         out = ''
+        run = f'execute in {dim} run {NS} inspect {x} 64 {z}'
         for _ in range(tries):
-            out = self.cmd(f'{NS} inspect {x} 64 {z}')
+            out = self.cmd(run)
+            line = pick(out, want)
             # Entities load a little after their chunk: wait for the guardian before rolling the loot.
-            if 'MMD inspect id=' in out and ('guardians=0' not in out or _ >= tries // 2):
-                return parse_inspect(self.cmd(f'{NS} inspect {x} 64 {z} fill') if fill else out)
+            if line and ('guardians=0' not in line or _ >= tries // 2):
+                return parse_inspect(pick(self.cmd(run + ' fill'), want) if fill else line)
             time.sleep(3)
         return {'raw': out}
 
-    def inspect_area(self, x, z, radius=40):
+    def inspect_area(self, x, z, radius=40, dim=OVERWORLD):
         # /place structure records no dungeon, so the area around it is scanned instead.
-        out = self.cmd(f'{NS} inspect area {x - radius} -64 {z - radius} {x + radius} 320 {z + radius} fill')
+        out = self.cmd(f'execute in {dim} run {NS} inspect area {x - radius} -64 {z - radius} {x + radius} 320 {z + radius} fill')
         return parse_inspect(out)
+
+
+def pick(out, want):
+    """The inspect line of dungeon `want` (or the first one) from a reply that may hold several."""
+    lines = re.findall(r'MMD inspect id=\S+ .*?(?=MMD inspect|$)', out, re.S)
+    for line in lines:
+        if want is None or line.startswith(f'MMD inspect id={want} '):
+            return line
+    return None
 
 
 def parse_inspect(out):
@@ -96,68 +118,86 @@ def parse_inspect(out):
 
 
 def check_dungeon(label, dungeon, info, guardian_expected=True):
-    mobs, has_map = DUNGEONS[dungeon]
+    mobs, has_map = DUNGEONS[dungeon][:2]
     if not check(f'{label}: inspect finds {dungeon}', info.get('id') in (dungeon, 'area'), info.get('raw')):
         return
     tables = info['chests']
     check(f'{label}: regular chests use {NS}:chests/{dungeon}', tables.get(f'{NS}:chests/{dungeon}', 0) >= 1, tables)
-    check(f'{label}: one vault uses {NS}:chests/{dungeon}_vault', tables.get(f'{NS}:chests/{dungeon}_vault', 0) == 1, tables)
-    # Vanilla features (a monster room, say) can overlap a dungeon; only this mod's tables must match.
-    check(f'{label}: no chest uses another dungeon\'s table',
-          all(k.startswith(f'{NS}:chests/{dungeon}') for k in tables if k.startswith(NS)), tables)
-    ours = sum(v for k, v in tables.items() if k.startswith(NS))
+    vaults = tables.get(f'{NS}:chests/{dungeon}_vault', 0)
+    # A labyrinth's vault chamber holds two vault chests; /place can repeat a piece, so an area scan may count more.
+    want = 2 if dungeon in LABYRINTHS else 1
+    check(f'{label}: the vault uses {NS}:chests/{dungeon}_vault', vaults == want or (info['id'] == 'area' and vaults >= want), tables)
+    # Other structures (a vanilla monster room, a labyrinth under a dungeon) can share the space, so other tables may
+    # show up too.
+    ours = sum(v for k, v in tables.items() if k.startswith(f'{NS}:chests/{dungeon}'))
     check(f'{label}: loot rolled into the chests', info['stacks'] >= 3 * ours, info['stacks'])
     if has_map:
-        check(f'{label}: a treasure map to the next dungeon was found', info['maps'] >= 1, info['raw'])
-    found = set(info['spawners'])
-    if info['id'] == 'area':
-        # A full-height area scan also sees vanilla spawners (monster rooms, mineshafts) under the dungeon.
+        check(f'{label}: a treasure map to the next tier was found', info['maps'] >= 1, info['raw'])
+    # Spawner mobs come as id[Custom_Name] when the spawned mob is named (the Cursed Keep's are).
+    found = {re.sub(r'\[.*\]$', '', k) for k in info['spawners']}
+    if dungeon == 'dungeon_t2':
+        names = {m.group(1) for k in info['spawners'] for m in [re.search(r'\[(.*)\]$', k)] if m}
+        check(f'{label}: named spawner mobs kept their names', {'Cursed_Warrior', 'Berserker', 'Shadow_Mage', 'Rage_Brute'} <= names,
+              info['spawners'])
+    if info['id'] == 'area' or dungeon in LABYRINTHS:
+        # A full-height area scan, or a labyrinth's wide underground box, also sees vanilla spawners (monster rooms,
+        # mineshafts) that overlap it.
         check(f'{label}: spawners have the expected mobs', 'none' not in found and (mobs & found), info['spawners'])
     else:
         check(f'{label}: spawners have the expected mobs', found and found <= mobs and 'none' not in found, info['spawners'])
     if guardian_expected:
-        check(f'{label}: guardian is alive', info['guardians'] == 1, info['guardians'])
+        check(f'{label}: guardian is alive', info['guardians'] == 1 or (info['id'] == 'area' and info['guardians'] >= 1),
+              info['guardians'])
 
 
-def place_somewhere(server, dungeon, near):
-    """Runs /place structure on chunks around `near` until one has ground the dungeon accepts."""
+def place_somewhere(server, dungeon, near, dim=OVERWORLD):
+    """Runs /place structure on chunks around a natural dungeon (so on land the dungeon likes) until one has ground it
+    accepts. Chunks that already hold a dungeon are skipped."""
     x0, z0 = near
-    for i in range(24):
-        x, z = (x0 + (i % 6) * 64) // 16 * 16 + 8, (z0 + (i // 6) * 64) // 16 * 16 + 8
-        server.load_area(x, z, 32)
-        time.sleep(1)
-        out = server.cmd(f'place structure {NS}:{dungeon} {x} 64 {z}')
-        if 'Generated structure' in out or 'generated' in out.lower() and 'fail' not in out.lower():
-            return (x, z), out
-        if 'not loaded' in out.lower():
-            time.sleep(3)
-            out = server.cmd(f'place structure {NS}:{dungeon} {x} 64 {z}')
+    out = ''
+    for r in (160, 224, 288):
+        for k in range(8):
+            a = k * 3.14159 / 4
+            x = int(x0 + r * math.cos(a)) // 16 * 16 + 8
+            z = int(z0 + r * math.sin(a)) // 16 * 16 + 8
+            server.load_area(x, z, 32 if dungeon not in LABYRINTHS else 96, dim)
+            time.sleep(2 if dungeon not in LABYRINTHS else 8)
+            if pick(server.cmd(f'execute in {dim} run {NS} inspect {x} 64 {z}'), dungeon):
+                continue
+            place = f'execute in {dim} run place structure {NS}:{dungeon} {x} 64 {z}'
+            out = server.cmd(place)
+            if 'not loaded' in out.lower():
+                time.sleep(6)
+                out = server.cmd(place)
             if 'Generated structure' in out:
                 return (x, z), out
+            server.unload_all()
     return None, out
 
 
 def server_checks(server, shots_dir=None):
     located = {}
-    for i, dungeon in enumerate(DUNGEONS):
+    for dungeon in DUNGEONS:
+        dim = DUNGEONS[dungeon][3]
+        radius = 96 if dungeon in LABYRINTHS else 48
         pos = server.locate(dungeon)
         if not check(f'locate {dungeon}', pos is not None):
             continue
         located[dungeon] = pos
-        server.load_area(*pos)
-        info = server.inspect(*pos)
+        server.load_area(*pos, radius=radius, dim=dim)
+        info = server.inspect(*pos, dim=dim, tries=30, want=dungeon)
         check_dungeon(f'natural {dungeon}', dungeon, info)
         server.unload_all()
-        # Somewhere well away from any natural one (the search starts 6000 blocks out, in a different direction).
-        origin = (pos[0] + 6000 * (1 if i % 2 else -1), pos[1] + 6000 * (1 if i < 2 else -1))
-        placed, out = place_somewhere(server, dungeon, origin)
+        placed, out = place_somewhere(server, dungeon, pos, dim)
         if check(f'place structure {dungeon}', placed is not None, out):
-            time.sleep(2)
-            info = server.inspect_area(*placed)
+            time.sleep(4)
+            info = server.inspect_area(*placed, radius=radius, dim=dim)
             check_dungeon(f'placed {dungeon}', dungeon, info)
         server.unload_all()
     tag = server.cmd(f'locate structure #{NS}:dungeons')
     check('locate #muchmoredungeons:dungeons', 'muchmoredungeons:' in tag, tag)
+    tag = server.cmd(f'locate structure #{NS}:labyrinths')
+    check('locate #muchmoredungeons:labyrinths', 'muchmoredungeons:' in tag, tag)
     for dungeon in DUNGEONS:
         for suffix in ('', '_vault'):
             out = server.cmd(f'loot spawn 0 -1000 0 loot {NS}:chests/{dungeon}{suffix}')
@@ -175,13 +215,14 @@ def client_checks(server, located, shots_dir):
     server.cmd(f'advancement revoke {PLAYER} everything')
     server.cmd(f'gamemode creative {PLAYER}')
     for dungeon, (x, z) in located.items():
-        server.load_area(x, z)
-        info = server.inspect(x, z, fill=False)
+        dim = DUNGEONS[dungeon][3]
+        server.load_area(x, z, radius=96 if dungeon in LABYRINTHS else 48, dim=dim)
+        info = server.inspect(x, z, fill=False, dim=dim, tries=30, want=dungeon)
         if info.get('id') != dungeon:
             check(f'client {dungeon}: dungeon ready', False, info.get('raw'))
             continue
         # The guardian stands inside the dungeon: walk in next to it.
-        server.cmd(f'tp {PLAYER} @e[tag={NS}.guardian.{dungeon},limit=1]')
+        server.cmd(f'execute in {dim} run tp {PLAYER} @e[tag={NS}.guardian.{dungeon},limit=1]')
         adv = ''
         for _ in range(15):
             time.sleep(2)
@@ -193,13 +234,24 @@ def client_checks(server, located, shots_dir):
             s.hud(False)
             s.shot(Path(shots_dir) / f'{dungeon}.png')
             s.hud(True)
-        hit = server.cmd(f'damage @e[tag={NS}.guardian.{dungeon},limit=1] 10000 minecraft:player_attack by {PLAYER}')
+        weapon = DUNGEONS[dungeon][2]
+        server.cmd(f'clear {PLAYER}')
+        hit = server.cmd(f'execute in {dim} run damage @e[tag={NS}.guardian.{dungeon},limit=1] 10000 minecraft:player_attack by {PLAYER}')
         time.sleep(2)
+        if weapon:
+            # The player stands on the guardian, so the weapon is on the ground or already picked up.
+            ground = server.cmd(f'execute in {dim} at {PLAYER} if entity @e[type=minecraft:item,distance=..10,nbt={{Item:{{id:"{weapon}"}}}}]')
+            held = server.cmd(f'clear {PLAYER} {weapon} 0')
+            dropped = 'passed' in ground.lower() or re.search(r'Found [1-9]', held) is not None
+            check(f'client {dungeon}: guardian dropped its {weapon}', dropped, f'{ground} / {held}')
         adv = server.cmd(f'execute if entity @a[name={PLAYER},advancements={{{NS}:slay_{dungeon}_guardian=true}}]')
         check(f'client {dungeon}: guardian advancement', 'passed' in adv.lower(), f'{hit} / {adv}')
         server.unload_all()
     adv = server.cmd(f'execute if entity @a[name={PLAYER},advancements={{{NS}:all_dungeons=true}}]')
     check('client: Dungeon Delver after all four', 'passed' in adv.lower(), adv)
+    adv = server.cmd(f'execute if entity @a[name={PLAYER},advancements={{{NS}:all_labyrinths=true}}]')
+    check('client: Into Every Maze after all six labyrinths', 'passed' in adv.lower(), adv)
+    server.cmd(f'execute in {OVERWORLD} run tp {PLAYER} 0 100 0')
 
 
 def log_checks(log):
