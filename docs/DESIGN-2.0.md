@@ -71,7 +71,7 @@ The market gap that stands out most is that dungeon mods ship **fixed** building
 seen them all (the most common complaint about vanilla structures too). Procedural, multi-room dungeons exist but are
 rarely themed to the land above them, linked to a loot progression or available on every loader and version.
 
-2.0 adds six **labyrinths**: underground dungeons assembled by vanilla's jigsaw system from a generated set of 16
+2.0 adds six **labyrinths**: underground dungeons assembled by vanilla's jigsaw system from a generated set of 15
 pieces per theme (an entrance shaft or a hub, corridors, corners, tees, crossings, stairs going down, two spawner
 rooms, a storeroom, a library, a pillared hall, a shrine, dead ends, alcoves, a vault approach and a vault chamber with
 the guardian). Every labyrinth is a different maze, built from its theme's palette, mobs and loot:

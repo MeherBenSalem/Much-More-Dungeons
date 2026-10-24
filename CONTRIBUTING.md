@@ -28,11 +28,14 @@ Data is generated, not edited by hand:
 pip install nbtlib
 python3 tools/datagen.py                   # loot tables, advancements, tags, structures, structure sets, language
 python3 tools/templates.py                 # villa, spire and keep templates (idempotent fixes), copied to all workspaces
+python3 tools/labyrinths.py                # every labyrinth piece (15 per theme), into all workspaces
 python3 tools/generate_soulfire_crypt.py   # the crypt template
 ```
 
 `tools/datagen.py` knows each version's data format (folder names, predicate and loot function syntax); change the
-tables at its top and run it, then rebuild.
+tables at its top and run it, then rebuild. A labyrinth theme (name, tier, palette, mobs, guardian, biomes, depth,
+theme loot) is one entry in `THEMES` in `tools/labyrinths.py`; `datagen.py` reads it for the pools, structures, loot
+and advancements, so run both after adding one.
 
 ## Testing in game
 
@@ -48,7 +51,7 @@ python3 tools/qa/dungeon_checks.py --log /tmp/mmd-qa/fabric-server.log --client 
 tools/qa/devrun.sh stop-client; tools/qa/devrun.sh stop-server 26.3
 ```
 
-`dungeon_checks.py` locates every dungeon, generates the located one and inspects it (chests on the right loot tables,
+`dungeon_checks.py` locates every dungeon and labyrinth (in the Nether too), generates the located one and inspects it (chests on the right loot tables,
 the loot rolls including a treasure map, spawner mobs, the guardian), places another with `/place structure` and
 inspects that, rolls every loot table, and with `--client` walks into each dungeon, defeats its guardian and checks the
 advancements and the weapon drop. It ends by scanning the server log for errors.

@@ -1,9 +1,10 @@
 # Patch notes
 
-## 2.0.0 — The Dungeon Trail
+## 2.0.0 — The Labyrinth Update
 
-Four tiers of loot with a guarded vault per dungeon, a named guardian in each dungeon, treasure maps leading from one
-dungeon to the next, ten advancements, terrain-aware placement (no floating or flooded dungeons), more frequent
+Six procedural jigsaw labyrinths (five under the Overworld, one in the Nether), each laid out differently every time.
+Four tiers of loot with a guarded vault per dungeon, a named guardian in each of the ten, treasure maps leading from one
+tier to the next, 23 advancements, terrain-aware placement (no floating or flooded dungeons), more frequent
 dungeons with per-dungeon biomes, a config file and `/muchmoredungeons inspect`. Available for Minecraft 1.20.1
 (Fabric, Forge), 1.21.1, 26.1.2, 26.2 and 26.3 (Fabric, NeoForge). Ids are unchanged; 1.x worlds keep their dungeons.
 
