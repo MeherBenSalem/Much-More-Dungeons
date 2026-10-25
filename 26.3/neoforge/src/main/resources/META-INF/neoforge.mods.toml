@@ -8,6 +8,8 @@ modId = "${mod_id}"
 version = "${version}"
 displayName = "${mod_name}"
 displayURL = "https://modrinth.com/mod/much-more-dungeons"
+# logoFile for older NeoForge versions, iconFile (the logo is square) for current ones
+logoFile = "logo.png"
 iconFile = "logo.png"
 credits = "${credits}"
 authors = "${mod_author}"
