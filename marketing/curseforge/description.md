@@ -150,7 +150,7 @@ Delver** (300 experience) and all six labyrinths for **Into Every Maze** (500 ex
 | Minecraft | Fabric | NeoForge / Forge | Java |
 |-----------|--------|------------------|------|
 | 26.3 | ✔ (Fabric API) | ✔ NeoForge | 25 |
-| 26.2 | ✔ (Fabric API) | ✔ NeoForge | 25 |
+| 26.2 | ✔ (Fabric API) | ✔ NeoForge 26.2.0.93+ | 25 |
 | 26.1.2 | ✔ (Fabric API) | ✔ NeoForge | 25 |
 | 1.21.1 | ✔ (Fabric API) | ✔ NeoForge | 21 |
 | 1.20.1 | ✔ (Fabric API) | ✔ Forge | 17 |

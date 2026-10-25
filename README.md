@@ -19,7 +19,7 @@ loader.
 | 1.20.1 | 17+ | `…-fabric-1.20.1-….jar` | `…-forge-1.20.1-….jar` (Forge 47) |
 | 1.21.1 | 21+ | `…-fabric-1.21.1-….jar` | `…-neoforge-1.21.1-….jar` |
 | 26.1.2 | 25+ | `…-fabric-26.1.2-….jar` | `…-neoforge-26.1.2-….jar` |
-| 26.2 | 25+ | `…-fabric-26.2-….jar` | `…-neoforge-26.2-….jar` |
+| 26.2 | 25+ | `…-fabric-26.2-….jar` | `…-neoforge-26.2-….jar` (NeoForge 26.2.0.93 or newer) |
 | 26.3 | 25+ | `…-fabric-26.3-….jar` | `…-neoforge-26.3-….jar` |
 
 Install it on the server and on clients (single player generates its world on the client).
