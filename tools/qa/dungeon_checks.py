@@ -175,6 +175,9 @@ def place_somewhere(server, dungeon, near, dim=OVERWORLD):
     return None, out
 
 
+VAULTS = {}
+
+
 def server_checks(server, shots_dir=None):
     located = {}
     for dungeon in DUNGEONS:
@@ -187,6 +190,10 @@ def server_checks(server, shots_dir=None):
         server.load_area(*pos, radius=radius, dim=dim)
         info = server.inspect(*pos, dim=dim, tries=30, want=dungeon)
         check_dungeon(f'natural {dungeon}', dungeon, info)
+        # Remembered for the client checks: once its loot is rolled, a chest no longer names its table.
+        vault = re.search(r'vault=(-?\d+),(-?\d+),(-?\d+)', info.get('raw', ''))
+        if vault:
+            VAULTS[dungeon] = tuple(map(int, vault.groups()))
         server.unload_all()
         placed, out = place_somewhere(server, dungeon, pos, dim)
         if check(f'place structure {dungeon}', placed is not None, out):
@@ -232,22 +239,22 @@ def client_checks(server, located, shots_dir):
                 break
             time.sleep(3)
         # Walk in at the vault (always inside; a guardian may have wandered out), then go to the guardian.
-        vault = re.search(r'vault=(-?\d+),(-?\d+),(-?\d+)', info.get('raw', ''))
+        vault = VAULTS.get(dungeon)
         if vault:
-            vx, vy, vz = map(int, vault.groups())
+            vx, vy, vz = vault
             # In the vault's own block (creative: no harm): one above can be outside the box, the vault being the
             # highest chest of some dungeons.
             server.cmd(f'execute in {dim} run tp {PLAYER} {vx + 0.5} {vy} {vz + 0.5}')
         else:
             server.cmd(f'execute in {dim} run tp {PLAYER} {guardian}')
         adv = ''
-        for _ in range(15):
+        for _ in range(30):  # the first one waits on the client loading the terrain after a long teleport
             time.sleep(2)
             adv = server.cmd(f'execute if entity @a[name={PLAYER},advancements={{{NS}:discover_{dungeon}=true}}]')
             if 'passed' in adv.lower():
                 break
         check(f'client {dungeon}: discovery advancement', 'passed' in adv.lower(),
-              f'{adv} / vault {vault.groups() if vault else None} / box {info["box"]} / '
+              f'{adv} / vault {vault} / box {info["box"]} / '
               f'{server.cmd(f"data get entity {PLAYER} Pos")}')
         if shots_dir:
             s.hud(False)
