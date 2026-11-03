@@ -1,5 +1,12 @@
 # Patch notes
 
+## 2.0.1
+
+- Dungeon spawners now spawn mobs: the rooms' lights kept 36 of 45 spawners from ever spawning (Overworld monsters
+  need darkness). Spawners now ignore light; break them to stop them. Applies to newly generated dungeons.
+
+Full notes: [patchnotes/2.0.1.md](patchnotes/2.0.1.md).
+
 ## 2.0.0 — The Labyrinth Update
 
 Six procedural jigsaw labyrinths (five under the Overworld, one in the Nether), each laid out differently every time.
