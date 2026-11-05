@@ -1,5 +1,9 @@
 ![Much More Dungeons](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/banner.png)
 
+**[Discord](https://discord.gg/TJc3CxR4jK) · [The modpack](https://www.curseforge.com/minecraft/modpacks/remnants-ashen-legacy) · [Support NightBeam](https://nightbeam.dev/support) · [NightBeam Pro](https://nightbeam.dev/memberships) · [All projects](https://nightbeam.dev/projects)**
+
+> **Featured in [Remnants: Ashen Legacy](https://www.curseforge.com/minecraft/modpacks/remnants-ashen-legacy)**, NightBeam's story-driven soulslike RPG modpack.
+
 **Four handcrafted dungeons, six procedural labyrinths, and a reason to go from one to the next.** Each has its own
 biomes, its own loot tier, themed spawners and a named guardian at the end. The labyrinths are assembled piece by
 piece under the ground, so no two are laid out alike. Vaults hold a treasure map to a dungeon of the next tier: from
@@ -110,7 +114,7 @@ health, armour and damage, and better gear. They never despawn, and the weapon t
 
 ![Four tiers of treasure](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/card-loot.png)
 
-Every chest rolls from its dungeon's table when it is first opened; the vault (the guarded chest) rolls from a
+Every chest rolls from its dungeon's table the moment it is opened; the vault (the guarded chest) rolls from a
 richer one. Labyrinths use the lists of their tier plus their own theme items (bones and candles in the catacombs,
 gold in the tomb, echo shards in the Abyssal Halls...). Enchanted gear and books scale with the tier:
 
@@ -196,4 +200,14 @@ lava are kept out, and the entrance shaft is closed by a trapdoor.
 
 ![Divider](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/divider.png)
 
-[Discord](https://discord.gg/SAmd9fhNhr) · [Source and issues](https://github.com/MeherBenSalem/Much-More-Dungeons) · [Support us](https://nightbeam.dev/support) · Made by NightBeam Studio
+---
+
+### More from NightBeam Studio
+
+- **[Remnants: Ashen Legacy](https://www.curseforge.com/minecraft/modpacks/remnants-ashen-legacy)**: the story-driven soulslike RPG modpack built on NightBeam's mods
+- **[Premium server plugins](https://nightbeam.dev/store)**: anti-cheat, ranked PvP, SMP setups and more on BuiltByBit
+- **[NightBeam Pro](https://nightbeam.dev/memberships)**: the model library and NightBeam Forge credits, from $5 a month
+- **[Discord](https://discord.gg/TJc3CxR4jK)**: support, bug reports, suggestions and early looks
+- **[Support NightBeam](https://nightbeam.dev/support)**: help keep every mod free
+
+**Follow:** [YouTube](https://www.youtube.com/@nightbeamstudio) · [Instagram](https://www.instagram.com/nightbeamstudio/) · [X](https://x.com/NightBeamLLC) · [Facebook](https://www.facebook.com/profile.php?id=61574823331471) · [Source and issues](https://github.com/MeherBenSalem/Much-More-Dungeons)
