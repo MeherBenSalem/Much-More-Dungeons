@@ -1,6 +1,6 @@
 ![Much More Dungeons](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/banner.png)
 
-**[Discord](https://discord.gg/TJc3CxR4jK) · [Source and issues](https://github.com/MeherBenSalem/Much-More-Dungeons)**
+**[Docs](https://nightbeam.dev/docs/much-more-dungeons) · [Discord](https://discord.gg/TJc3CxR4jK) · [Source and issues](https://github.com/MeherBenSalem/Much-More-Dungeons)**
 
 **Four handcrafted dungeons, six procedural labyrinths, and a reason to go from one to the next.** Each has its own
 biomes, its own loot tier, themed spawners and a named guardian at the end. The labyrinths are assembled piece by
