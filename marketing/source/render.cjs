@@ -11,7 +11,6 @@ const RELEASE = { version: '2.0', name: 'The Labyrinth Update' };
 const VERSIONS = [
   { minecraft: '1.20.1', loaders: ['Fabric', 'Forge'] },
   { minecraft: '1.21.1', loaders: ['Fabric', 'NeoForge'] },
-  { minecraft: '26.1.2', loaders: ['Fabric', 'NeoForge'] },
   { minecraft: '26.2', loaders: ['Fabric', 'NeoForge'] },
   { minecraft: '26.3', loaders: ['Fabric', 'NeoForge'] },
 ];

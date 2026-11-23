@@ -25,7 +25,7 @@ from pathlib import Path
 
 NS = 'muchmoredungeons'
 REPO = Path(__file__).resolve().parents[1]
-WORKSPACES = {'1.20.1': 'structures', '1.21.1': 'structure', '26.1.2': 'structure', '26.2': 'structure', '26.3': 'structure'}
+WORKSPACES = {'1.20.1': 'structures', '1.21.1': 'structure', '26.2': 'structure', '26.3': 'structure'}
 DATA_VERSION = 3465  # 1.20.1: every newer version upgrades the templates when it loads them
 
 # id: name, tier, guardian (entity, name, health, armor, attack, mainhand, helmet), spawner mobs, biomes

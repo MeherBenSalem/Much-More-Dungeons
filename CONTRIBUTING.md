@@ -4,12 +4,13 @@ Thanks for helping improve Much More Dungeons.
 
 ## How to contribute
 
-1. Fork the repository and create a feature branch from `main`.
-2. Make focused changes in the relevant Minecraft version workspace (`1.20.1/`, `1.21.1/`, `26.1.2/`, `26.2/` or
-   `26.3/`). A gameplay change usually belongs in all five: the `common/` code is nearly identical between them, and
-   only version-specific APIs differ.
-3. Build the workspace you changed (`./gradlew build` from that folder, with Java 17 for 1.20.1, 21 for 1.21.1 and 25
-   for 26.x). This also runs the unit tests.
+1. Fork the repository and create a branch from `main`.
+2. Make focused changes in the relevant Minecraft version workspace (`1.20.1/`, `1.21.1/`, `26.2/` or `26.3/`). A
+   gameplay change usually belongs in all four: the `common/` code is nearly identical between them, and only
+   version-specific APIs differ.
+3. Build the workspace you changed (`./gradlew build` from that folder: Gradle on Java 21 for 1.20.1 and 1.21.1,
+   Java 25 for 26.x), or all four with `./gradlew buildAll` from the root (the 8 loader jars land in `releases/`).
+   This also runs the unit tests.
 4. Open a pull request describing the change and how you tested it.
 
 ## Layout
@@ -56,7 +57,7 @@ the loot rolls including a treasure map, spawner mobs, the guardian), places ano
 inspects that, rolls every loot table, and with `--client` walks into each dungeon, defeats its guardian and checks the
 advancements and the weapon drop. It ends by scanning the server log for errors.
 
-`tools/qa/run_matrix.sh` does all of that on a fresh world for every build (ten: five versions, two loaders each):
+`tools/qa/run_matrix.sh` does all of that on a fresh world for every build (eight: four versions, two loaders each):
 
 ```bash
 tools/qa/run_matrix.sh                       # all builds; results in /tmp/mmd-qa/results/

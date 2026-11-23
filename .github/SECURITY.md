@@ -8,8 +8,8 @@ Security fixes are considered for the latest released mod version on actively ma
 |-----------|--------|
 | `1.20.1` | Supported |
 | `1.21.1` | Supported |
-| `26.1.2` | Supported |
 | `26.2` | Supported |
+| `26.3` | Supported |
 
 Older mod releases may not receive backports.
 

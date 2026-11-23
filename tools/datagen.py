@@ -26,7 +26,7 @@ from labyrinths import ENDS, HALLS, THEMES  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[1]
 NS = 'muchmoredungeons'
-VERSIONS = ['1.20.1', '1.21.1', '26.1.2', '26.2', '26.3']
+VERSIONS = ['1.20.1', '1.21.1', '26.2', '26.3']
 
 DUNGEONS = ['outdoor_villa', 'tower_dungeon', 'dungeon_t2', 'soulfire_crypt']
 TITLES = {

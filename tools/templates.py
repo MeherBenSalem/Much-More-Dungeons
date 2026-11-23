@@ -20,7 +20,7 @@ from nbtlib import Byte, Compound, Float, Int, List, Long, Short, String, load
 
 REPO = Path(__file__).resolve().parents[1]
 SOURCE = REPO / '1.21.1/common/src/main/resources/data/muchmoredungeons/structure'
-WORKSPACES = {'1.20.1': 'structures', '1.21.1': 'structure', '26.1.2': 'structure', '26.2': 'structure', '26.3': 'structure'}
+WORKSPACES = {'1.20.1': 'structures', '1.21.1': 'structure', '26.2': 'structure', '26.3': 'structure'}
 NS = 'muchmoredungeons'
 
 # Mobs for the template's empty spawners, from the lowest spawner up.

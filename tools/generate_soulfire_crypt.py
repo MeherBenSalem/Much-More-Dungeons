@@ -318,7 +318,7 @@ for x in range(W):
 repo = Path(__file__).resolve().parents[1]
 targets = [(repo / "1.20.1/common/src/main/resources/data/muchmoredungeons/structures/soulfire_crypt.nbt", 3465)] + [
     (repo / f"{ws}/common/src/main/resources/data/muchmoredungeons/structure/soulfire_crypt.nbt", 3955)
-    for ws in ("1.21.1", "26.1.2", "26.2", "26.3")
+    for ws in ("1.21.1", "26.2", "26.3")
 ]
 
 for path, data_version in targets:

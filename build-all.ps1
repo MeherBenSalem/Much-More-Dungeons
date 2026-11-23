@@ -1,6 +1,7 @@
 # build-all.ps1
 # Builds Much More Dungeons for all versions and collects the release JARs into releases/
-# (each workspace needs its Java: 17 for 1.20.1, 21 for 1.21.1, 25 for 26.x; see tools/build_release.sh on Linux)
+# (each workspace needs its Java: 17 for 1.20.1, 21 for 1.21.1, 25 for 26.x; see tools/build_release.sh on Linux,
+# or run ./gradlew buildAll from the root on any OS)
 
 $root  = $PSScriptRoot
 $dist  = Join-Path $root "releases"
@@ -9,7 +10,6 @@ $dist  = Join-Path $root "releases"
 $versionLoaders = [ordered]@{
     "1.20.1"  = @("fabric", "forge")
     "1.21.1"  = @("fabric", "neoforge")
-    "26.1.2"  = @("fabric", "neoforge")
     "26.2"    = @("fabric", "neoforge")
     "26.3"    = @("fabric", "neoforge")
 }

@@ -8,7 +8,7 @@ piece under the ground, so no two are laid out alike. Vaults hold a treasure map
 a smugglers' villa in the plains to an arcane spire in the forest, a cursed keep in the desert and, last, a soulfire
 crypt in the snow, with catacombs, tombs and frozen vaults beneath them.
 
-Fabric and NeoForge (Forge on 1.20.1) · Minecraft 1.20.1, 1.21.1, 26.1.2, 26.2 and 26.3 · install on the server and
+Fabric and NeoForge (Forge on 1.20.1) · Minecraft 1.20.1, 1.21.1, 26.2 and 26.3 · install on the server and
 clients
 
 ![What's new in 2.0](https://raw.githubusercontent.com/MeherBenSalem/Much-More-Dungeons/main/marketing/images/header-whats-new.png)
@@ -153,7 +153,6 @@ Delver** (300 experience) and all six labyrinths for **Into Every Maze** (500 ex
 |-----------|--------|------------------|------|
 | 26.3 | ✔ (Fabric API) | ✔ NeoForge | 25 |
 | 26.2 | ✔ (Fabric API) | ✔ NeoForge 26.2.0.93+ | 25 |
-| 26.1.2 | ✔ (Fabric API) | ✔ NeoForge | 25 |
 | 1.21.1 | ✔ (Fabric API) | ✔ NeoForge | 21 |
 | 1.20.1 | ✔ (Fabric API) | ✔ Forge | 17 |
 
