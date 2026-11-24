@@ -124,11 +124,11 @@ shared version and the metadata ranges. Release notes for a version live in `pat
 ## Releasing
 
 CI (`.github/workflows/ci.yml`) builds all 8 jars on every push to `main` that touches the build. Publishing to
-Modrinth and CurseForge is `.github/workflows/publish.yml`, run by hand (`version`, `dry_run`) or by a `v*.*.*` tag;
+CurseForge is `.github/workflows/publish.yml`, run by hand (`version`, `dry_run`) or by a `v*.*.*` tag;
 it never runs on a plain push. It refuses a second release of the mod on the same day (Africa/Tunis), takes the jars
 from `releases/`, the GitHub Release or a build from source, and fails unless exactly the 8 jars are found. It needs
-the secrets `MODRINTH_TOKEN`, `CURSEFORGE_TOKEN`, `CURSEFORGE_API_KEY` and the variables `MODRINTH_ID`,
-`CURSEFORGE_ID`.
+the secrets `CURSEFORGE_TOKEN` (upload token) and `CURSEFORGE_API_KEY` (Core API key) and the variable
+`CURSEFORGE_ID`. NightBeam publishes to CurseForge only; the Modrinth page stays up but gets no new versions.
 
 ## Tools
 
@@ -142,12 +142,11 @@ the secrets `MODRINTH_TOKEN`, `CURSEFORGE_TOKEN`, `CURSEFORGE_API_KEY` and the v
   natural generation, `/place`, loot tables, spawners, guardians, advancements and the logs; `run_matrix.sh` runs it on
   every build; `marketing_shots.py` captures the listing screenshots; `rarity.py` measures how far the nearest dungeons
   are.
-- [`marketing/`](marketing): the CurseForge and Modrinth descriptions, listing images and how to regenerate them.
+- [`marketing/`](marketing): the CurseForge description, listing images and how to regenerate them.
 
 ## Links
 
 - [Discord](https://discord.gg/SAmd9fhNhr)
-- [Modrinth](https://modrinth.com/mod/much-more-dungeons)
 - [Source and issues](https://github.com/MeherBenSalem/Much-More-Dungeons)
 - [Support us](https://nightbeam.dev/support)
 
